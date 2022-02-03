@@ -1,0 +1,116 @@
+/.XL LOGON
+/.XL DO DO.EXTRA,('(PRIMARY)')
+EOF ID NUM STRING
+[AXIOM = SEQUENCE
+.SEQUENCE = I_ELEM W_ELEM 
+          | I_ELEM SEQUENCE 
+.I_ELEM = I_LABEL ELEM 
+        | I_ELEM APPEND 
+.W_ELEM = OMEGA I_LABEL ELEM 
+        | OMEGA '' ':' 
+.S_LABEL = SNAME ':' 
+         | ':' 
+.I_LABEL = INT_LABEL 
+        S_LABEL 
+.INT_LABEL = INT ',' SNAME ':' 
+           | INT ':' 
+.SEQ_DEF = '<' I_LIST '>' 
+.I_LIST = ITEM 
+        | I_LIST ',' ITEM 
+        | I_LIST '|' ITEM 
+.ITEM = PRIM 
+      | '(' I_LIST ')' 
+      | REP '(' I_LIST ')' 
+.PRIM = SNAME 
+      | NONX_PRIM 
+.REP = INT 
+     | SNAME 
+     | SPC SNAME 
+     | '?' 
+.PRIMITIVE = EXEC_PRIM 
+           | NONX_PRIM 
+.EXEC_PRIM = ACC 
+           | X_STMT 
+           | EXPR 
+           | P_S_TYPE 
+.NONX_PRIM = CELL 
+           | DATA 
+           | POINTER 
+           | SPC_INT 
+.ACC = F_NAME 
+     | F_NAME N_STRING 
+.F_NAME = '*' 
+        | SNAME 
+        | '*' SNAME 
+.NSTRING = '#' N_PART
+          | N_STRING N_PART 
+.N_PART = '.' S_NAME 
+        | '/' INT_X 
+.INT_X = SNAME 
+       | INT 
+       | '(' ACC ')' 
+       | P_S_TYPE 
+       | SPC 
+       | SPC SNAME 
+       | '(' SPC ACC ')' 
+.XSTMT = C_STR ALT '|' ALT 
+       | C_STR ALT 
+       | C_STR '|' ALT 
+       | ALT 
+.C_STR = '(' D_STR ')' 
+       | C_STR '(' D_STR ')' 
+.D_STR = EXPR 
+       | D_STR '|' EXPR 
+.ALT = COMMAND ',' CE 
+     | COMMAND 
+     | CE 
+.CE = '#' 
+    | RTN 
+    | RETURN 
+    | HPR 
+    |'#' 
+    | RET '(' P_LIST.COMMAND =C 
+         | RPT ACC 
+         | RES ACC 
+         | NULL 
+         | CALL ACC 
+         | CALL ACC '(' P_LIST ')' 
+         | CITE ACC 
+         | CITE ACC EPSILON ACC 
+         | ACC '<-' EXPR 
+.P_LIST = PRIX 
+        | P_LIST ',' PRIX 
+.PRIX = ACC 
+      | EXPR 
+      | P_S_TYPE 
+      | DATA 
+      | SPC_INT 
+.EXPR = UNELABORATED 
+.P_S_TYPE = PRED_TYPE 
+          | SUCC_TYPE 
+.PRED_TYPE = '' P_S 
+           | '' PRED_TYPE 
+.SUCC_TYPE = P_S '' 
+           | SUCC_TYPE '' 
+.P_S = SNAME 
+     | '(' ACC ')' 
+     | SPC 
+     | '(' SPC ACC ')' 
+.CELL = '_' 
+.DATA = INT 
+      | CHAR 
+      | HEX 
+      | BITS 
+      | TRUE 
+      | FALSE 
+.POINTER = '->' ACC 
+         | '->' ACC EPSILON ACC 
+.SPC_INT = SPC 
+         | SPC ACC 
+.SPC = ALPHA 
+     | IOTA 
+     | RHO 
+     | OMEGA 
+. 
+]
+/LOGOFF

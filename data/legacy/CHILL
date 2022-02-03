@@ -1,0 +1,824 @@
+/.CHILL LOGON
+/DO DO.EXTRA,('(PRIMARY)',PARM='NOSPLIT,TERMLA')
+EOF NAME NUMBER STRING
+[AXIOM = CHILL_PROGRAM
+ /*
+2.6 COMPILE DIRECTIVES
+======================                                               */
+ /*
+3.2 MODE DEFINITION
+===================                                                  */
+.MODE_DEFINITION =              NAME_LIST '=' DEFINING_MODE
+.DEFINING_MODE =                MODE
+.SYNMODE_DEFINITION_STATEMENT = SYNMODE MODE_DEFINITION_LIST ';'
+.MODE_DEFINITION_LIST = MODE_DEFINITION
+                      | MODE_DEFINITION_LIST ',' MODE_DEFINITION
+.NEWMODE_DEFINITION_STATEMENT = NEWMODE MODE_DEFINITION_LIST ';'
+ /*
+3.3 MODE CLASSIFICATION
+=======================                                              */
+.MODE =                         NON_COMPOSITE_MODE
+                              | COMPOSITE_MODE
+.NONE_COMPOSITE_MODE =
+                              | DISCRETE_MODE
+                              | POWERSET_MODE
+                              | REFERENCE_MODE
+                              | PROCEDURE_MODE
+                              | LABEL_MODE
+                              | INSTANCE_MODE
+                              | SYNCHRONISATION_MODE
+.DISCRETE_MODE =                INTEGER_MODE
+                              | BOOLEAN_MODE
+                              | CHARACTER_MODE
+                              | SET_MODE
+                              | RANGE_MODE
+.INTEGER_MODE =                 READ_OPTION INT
+                              | READ_OPTION BIN
+                              | READ_OPTION /* <INTEGER_MODE> */ NAME
+.READ_OPTION =
+             | READ
+.BOOLEAN_MODE =                 READ_OPTION BOOL
+                              | READ_OPTION /* <BOOLEAN_MODE> */ NAME
+.CHARATER_MODE =                READ_OPTION CHAR
+                              | READ_OPTION /* <CHARACTER_MODE> */ NAME
+.RANGE_MODE =                   READ_OPTION /* <DISCRETE_MODE> */ NAME
+                                 '(' LITERAL_RANGE ')'
+                              | READ_OPTION RANGE '(' LITERAL_RANGE ')'
+                              | READ_OPTION BIN
+                                 '(' /* <INTEGER_LITERAL> */ EXPRESSION ')'
+                              | READ_OPTION /* <RANGE_MODE> */ NAME
+.LITERAL_RANGE =                LOWER_BOUND ':' UPPER_BOUND
+.LOWER_BOUND =                  /* <DISCRETE_LITERAL> */ EXPRESSION
+.UPPER_BOUND =                  /* <DISCRETE_LITERAL> */ EXPRESSION
+.POWERSET_MODE =                READ_OPTION POWERSET MEMBER_MODE
+                              | READ_OPTION /* <POWERSET_MODE> */ NAME
+.MEMBER_MODE =                  DISCRETE_MODE
+.REFERENCE_MODE =               BOUND_REFERENCE_MODE
+                              | FREE_REFERENCE_MODE
+                              | ROW_MODE
+.BOUND_REFERENCE_MODE =         READ_OPTION REF REFERENCED_MODE
+                            READ_OPTION /* <BOUND_REFERENCE_MODE> */ NAME
+.REFERENCED_MODE =              MODE
+.FREE_REFERENCE_MODE =          READ_OPTION PTR
+                              | READ_OPTION /* <FREE_REFERENCE_MODE> */ NAME
+.ROW_MODE =                     READ_OPTION ROW STRING_MODE
+                              | READ_OPTION ROW ARRAY_MODE
+                              | READ_OPTION ROW
+                                 /* <VARIANT_STRUCTURE_MODE> */ NAME
+                              | READ_OPTION /* <ROW_MODE> */ NAME
+ /*
+3.7  PROCEDURE MODE
+===================                                                   */
+.PROCEDURE_MODE =               READ_OPTION PROC
+                                 '(' PARAMETER_LIST_OPTION ')'
+                                 RESULT_SPEC_OPTION EXEPTIONS_OPTION
+                                 RECURSIVE_OPTION
+                              |  READ_OPTION /* <PROCEDURE_MODE> */ NAME
+.PARAMETER_LIST_OPTION =
+                              | PARAMETER_LIST
+.RESULT_SPEC_OPTION =
+                              | RESULT_SPEC
+.EXEPTIONS_OPTION =
+                              | EXCEPTIONS '(' EXCEPTION_LIST ')'
+.RECURSIVE_OPTION =
+                              | RECURSIVE
+.PARAMETER_LIST =               PARAMETER
+                              | PARAMETER_LIST ',' PARAMETER
+.PARAMETER =                    MODE PARAMETER_ATTRIBUTE_OPTION
+                                  /* <REGISTER> */ NAME_OPTION
+.PARAMETER_ATTRIBUTE_OPTION =
+                              | PARAMETER_ATTRIBUTE
+.PARAMETER_ATTRIBUTE =          IN
+                              | OUT
+                              | INOUT
+                              | LOC
+.RESULT_SPEC =                  RETURNS_OPTION '(' MODE LOC_OPTION
+                                  /* <REGISTER> */ NAME_OPTION ')'
+.RETURNS_OPTION =
+                              | RETURNS
+.LOC_OPTION =
+                              | LOC
+./* <REGISTER> */ NAME_OPTION =
+                              | /* <REGISTER> */ NAME
+.EXCEPTION_LIST =                /* <EXEPTION> */ NAME
+                              | EXCEPTION_LIST ',' /* <EXCEPTION> */ NAME
+.EXCEPTION_NAME =                NAME
+ /*
+3.8 INSTANCE MODES
+==================                                                   */
+.INSTANCE_MODE =                READ_OPTION INSTANCE
+                              | READ_OPTION /* <INSTANCE_MODE> */ NAME
+ /*
+3.9 SYNCHRONISATION MODES
+=========================                                            */
+.SYNCHRONISATION_MODE =         EVENT_MODE
+                              | BUFFER_MODE
+.EVENT_MODE =                   READ_OPTION EVENT EVENT_LENGTH_OPTION
+                              | READ_OPTION /* <EVENT_MODE> */ NAME
+.EVENT_LENGTH_OPTION =
+                              | '(' EVENT_LENGTH ')'
+.EVENT_LENGTH =                 /* <INTEGER_LITERAL> */ EXPRESSION
+.BUFFER_MODE =                  READ_OPTION BUFFER
+                                  BUFFER_LENGTH_OPTION
+                                  BUFFER_ELEMENT_MODE
+                              | READ_OPTION /* <BUFFER_MODE> */ NAME
+.BUFFER_LENGTH_OPTION =
+                              | '(' BUFFER_LENGTH ')'
+.BUFFER_LENGTH =                /* <INTEGER_LITERAL> */ EXPRESSION
+.BUFFER_ELEMENT_MODE =          MODE
+ /*
+3.10 COMPOSITE MODES
+====================                                                 */
+.COMPOSITE_MODE =               STRING_MODE
+                              | ARRAY_MODE
+                              | STRUCTURE_MODE
+.STRING_MODE =                  READ_OPTION STRING_TYPE
+                                 '(' STRING_LENGTH ')'
+                              | PARAMETERISED_STRING_MODE
+                              | READ_OPTION /* <STRING_MODE> */ NAME
+.PARAMETERISED_STRING_MODE =    READ_OPTION
+                                  MOTHER_STRING_MODE_NAME
+                                  '(' STRING_LENGTH ')'
+                              | READ_OPTION
+                                  /* <PARAMETERISED_STRING_MODE> */ NAME
+.MOTHER_STRING_MODE_NAME =      /* <STRING_MODE> */ NAME
+.STRING_TYPE =                  CHAR
+                              | BIT
+.STRING_LENGTH =                /* <INTEGER_LITERAL> */ EXPRESSION
+.ARRAY_MODE =                   READ_OPTION ARRAY_OPTION
+                                  '(' INDEX_SET_LIST ')'
+                                  ELEMENT_MODE ELEMENT_LAYOUT_ITER
+                              | PARAMETERISED_ARRAY_MODE
+                              | READ_OPTION /* <ARRAY_MODE> */ NAME
+.INDEX_SET_LIST =               INDEX_SET
+                              | INDEX_SET_LIST ',' INDEX_SET
+.ELEMENT_LAYOUT_ITER =          ELEMENT_LAYOUT
+                              | ELEMENT_LAYOUT_ITER ELEMENT_LAYOUT
+.PARAMETERISED_ARRAY_MODE =     READ_OPTION MOTHER_ARRAY_MODE_NAME
+                                 '(' UPPER_INDEX ')'
+                              | READ_OPTION
+                                 /* <PARAMETERISED_ARRAY_MODE> */ NAME
+.MOTHER_ARRAY_MODE_NAME =       /* <ARRAY_MODE> */ NAME
+.INDEX_SET =                    DISCRETE_MODE
+                              | LITERAL_RANGE
+.UPPER_INDEX =                  /* <LITERAL> */ EXPRESSION
+.ELEMENT_MODE =                 MODE
+.STRUCTURE_MODE =               NESTED_STRUCTURE_MODE
+                              | LEVEL_STRUCTURE_MODE
+                              | PARAMETERISED_STRUCTURE_MODE
+                              | READ_OPTION /* <STRUCTURE_MODE> */ NAME
+.NESTED_STRUCTURE_MODE =        READ_OPTION STRUCT
+                                  '(' FIELDS_LIST ')'
+.FIELDS_LIST  =                 FIELDS
+                              | FIELDS_LIST FIELDS
+.FIELDS =                       FIXED_FIELDS
+                              | ALTERNATIVE_FIELDS
+.FIXED_FIELDS =                 NAME_LIST MODE FIELDS_LAYOUT_OPTION
+.FIELDS_LAYOUT_OPTION =
+                              | FIELDS_LAYOUT
+.ALTERNATIVE_FIELDS =           CASE TAGS_OPTION OF
+                                  VARIANT_ALTERNATIVE_LIST
+                                  ELSE_OPTION ESAC
+.VARIANT_ALTERNATIVE_LIST  =    VARIANT_ALTERNATIVE
+                       | VARIANT_ALTERNATIVE_LIST ',' VARIANT_ALTERNATIVE
+.ELSE_OPTION =
+                              | ELSE VARIANT_FIELDS_OPTION
+.VARIANT_FIELDS_OPTION =
+                              | VARIANT_FIELDS_LIST
+.VARIANT_FIELDS_LIST =          VARIANT_FIELDS
+                              | VARIANT_FIELDS_LIST ',' VARIANT_FIELDS
+.VARIANT_ALTERNATIVE =          CASE_LABEL_SPECIFICATION_OPTION
+                                  ':' VARIANT_FIELDS_OPTION
+.CASE_LABEL_SPECIFICATION_OPTION =
+                              | CASE_LABEL_SPECIFICATION_LIST
+.CASE_LABEL_SPECIFICATION__LIST = CASE_LABEL_SPECIFICATION
+         | CASE_LABEL_SPECIFICATION_LIST ',' CASE_LABEL_SPECIFICATION
+ /*                                           */
+ /*                                           */
+.TAGS =                         /* <TAG_FIELD> */ NAME
+                              | TAGS ',' /* <TAG_FIELD> */ NAME
+.VARIANT_FIELDS =               NAME_LIST MODE FIELDS_LAYOUT_OPTION
+.PARAMETERISED_STRUCTURE_MODE = READ_OPTION MOTHER_VARIANT_MODE_NAME
+                                  '(' LITERAL_EXPRESSION_LIST ')'
+                              | READ_OPTION
+                                  /* <PARAMETERISED_STRUCTURE_MODE> */ NAME
+.MOTHER_VARIANT_MODE_NAME =     /* <VARIANT_STRUCTURE_MODE> */ NAME
+.LITERAL_EXPRESSION_LIST =      /* <LITERAL> */ EXPRESSION
+                              | LITERAL_EXPRESSION_LIST ',' LITERAL_EXPRESSION
+.LEVEL_STRUCTURE_MODE =         ARRAY_SPECIFICATION_OPTION
+                                  READ_OPTION LEVELS_FIELDS_LIST
+.LEVELS_FIELDS_LIST =           LEVELS_FIELDS
+                              | LEVELS_FIELDS_LIST ',' LEVELS_FIELDS
+.ARRAY_SPECIFICATION_OPTION =
+                              | ARRAY_SPECIFICATION
+.LEVELS_FIELDS_OPTION =
+                              | LEVELS_FIELDS
+.LEVELS_FIELDS =                LEVEL_FIXED_FIELDS
+                              | LEVEL_ALTERNATIVE_FIELDS
+.LEVEL_FIXED_FIELDS =           INTEGER NAME_LIST MODE
+                                 FIELD_LAYOUT_OPTION
+                              | INTEGER NAME_LIST
+                                 ARRAY_SPECIFICATION_OPTION
+                                 ARRAY_SPECIFICATION_OPTION
+                                 READ_OPTION FIELD_LAYOUT_OPTION
+                                 LEVEL_FIELDS /','
+.FIELD_LAYOUT_OPTION =
+                              | FIELD_LAYOUT
+.LEVEL_ALTERNATIVE_FIELDS =     CASE TAGS_OPTION OF
+                                 LEVEL_ALTERNATIVE /','
+                                 ELSE_LEVEL_OPTION ESAC
+.ELSE_LEVEL_OPTION =
+                              | ELSE LEVEL_VARIANT_FIELDS_OPTION
+.LEVEL_VARIANT_FIELDS_OPTION =
+                              | LEVEL_VARIANT_FIELDS
+                                 /','
+.LEVEL_ALTERNATIVE =            CASE_LEVEL_SPECIFICATION_OPTION
+                                 ':' LEVEL_VARIANT_FIELDS_OPTION
+.LEVEL_VARIANT_FIELDS_OPTION =
+                              | LEVEL_VARIANT_FIELDS
+                                 /','
+.LEVEL_VARIANT_FIELDS =         INTEGER NAME_LIST MODE
+                                 FIELD_LAYOUT_OPTION
+                              | INTEGER NAME_LIST
+                                 ARRAY_SPECIFICATION_OPTION
+                                 READ_OPTION FIELD_LAYOUT_OPTION
+                                 LEVEL_FIELDS /','
+.ARRAY_SPECIFICATION =          READ_OPTION ARRAY_OPTION
+                                 '(' INDEX_SET /','
+                                 ELEMENT_LAYOUT_OPTION
+.ARRAY_OPTION =
+                              | ARRAY
+.ELEMENT_LAYOUT_OPTION =
+                              | ELEMENT_LAYOUT
+.READ_OPTION =
+                              | READ
+.ELEMENT_LAYOUT =               PACK
+                              | NOPACK
+                              | STEP
+.FIELDS_LAYOUT                  PACK
+                              | NOPACK
+                              | POS
+.STEP =                         STEP '(' POS STEP_SIZE_OPTION ')'
+.STEP_SIZE_OPTION =
+                              | ',' STEP_SIZE PATTERN_SIZE_OPTION
+.PATTERN_SIZE_OPTION =
+                              | ',' PATTERN_SIZE
+.POS =                          POS '(' WORD ',' START_BIT ',' LENGTH
+                                 ')'
+                              | POS '(' WORD STAR_BIT_OPTION ')'
+.START_BIT_OPTION =
+                              | ',' START_BIT ':' END_BIT
+.PATTERN_SIZE =                 INTEGER_LITERAL_EXPRESSION
+.WORD =                         INTEGER_LITERAL_EXPRESSION
+.STEP_SIZE =                    INTEGER_LITERAL_EXPRESSION
+.START_BIT =                    INTEGER_LITERAL_EXPRESSION
+.END_BIT =                      INTEGER_LITERAL_EXPRESSION
+ /*----------------------------------------------------------------------
+    4. LOCATIONS AND THEIR ACCESSES
+ */
+ /*GF
+.DECLARATION_STATEMENT = DCL DECLARATION
+                       | DECLARATION_STATEMENT ',' DECLARATION
+ GF*/
+.DECLARATION = LOCATION_DECLARATION
+             | LOC_IDENTITY_DECLARATION
+             | BASED_DECLARATION
+.LOCATION_DECLARATION = NAME_LIST MODE STATIC_OPTION INITIALIZATION_OPTION
+.INITIALIZATION = REACH_BOUND_INITIALIZATION
+                | LIFETIME_BOUND_INITIALIZATION
+.REACH_BOUND_INITIALIZATION = ASSIGNMENT_SYMBOL VALUE HANDLER_OPTION
+.LIFETIME_BOUND_INITIALIZATION = INIT ASSIGNMENT_SYMBOL /* <CONSTANT> */ VALUE
+.LOC_IDENTITY_DECLARATION = NAME_LIST MODE LOC
+                              ASSIGNMENT_SYMBOL
+                              STATIC_MODE_LOCATION HANDLER_OPTION
+.BASED_DECLARATION = NAME_LIST MODE BASED
+                   | NAME_LIST MODE BASED '('
+                       /* <BOUND_OR_FREE_REFERENCE_LOCATION> */ NAME ')'
+.LOCATION = STATIC_MODE_LOCATION
+          | DYNAMIC_MODE_LOCATION
+.STATIC_MODE_LOCATION = ACCESS_NAME
+                      | DEREFERENCED_BOUND_REFERENCE
+                      | DEREFERENCED_FREE_REFERENCE
+                      | STRING_ELEMENT
+                      | SUB_STRING
+                      | ARRAY_ELEMENT
+                      | SUB_ARRAY
+                      | STRUCTURE_FIELD
+                      | LOCATION_PROCEDURE_CALL
+                      | LOCATION_BUILT_IN_ROUTINE_CALL
+                      | LOCATION_CONVERSION
+.DYNAMIC_MODE_LOCATION = STRING_SLICE
+                       | ARRAY_SLICE
+                       | DEREFERENCED_ROW
+.ACCESS_NAME = /* <LOCATION> */ NAME
+             | /* <LOC_IDENTITY> */ NAME
+             | /* <BASED> */ NAME
+             | /* <LOCATION_ENUMERATION> */ NAME
+             | /* <LOCATION_DO_WITH> */ NAME
+.DEREFERENCED_BOUND_REFERENCE = /* <BOUND_REFERENCE> */ EXPRESSION '-> */ '
+                                    /* <MODE> */ NAME_OPTION
+./* <MODE> */ NAME_OPTION =
+                  | /* <MODE> */ NAME
+.DEREFERENCED_FREE_REFERENCE = /* <FREE_REFERENCE> */ EXPRESSION
+                                 '->' /* <MODE> */ NAME
+.STRING_ELEMENT = /* <STRING> */ LOCATION '(' POSITION ')'
+.SUBSTRING = /* <STRING> */ LOCATION '(' LEFT_ELEMENT ':' RIGHT_ELEMENT ')'
+           | /* <STRING> */ LOCATION '(' POSITION UP LENGTH ')'
+.LEFT_ELEMENT  = /* <INTEGER_LITERAL> */ EXPRESSION
+.RIGHT_ELEMENT = /* <INTEGER_LITERAL> */ EXPRESSION
+.POSITION = /* <INTEGER> */ EXPRESSION
+.LENGTH   = /* <INTEGER> */ EXPRESSION
+.ARRAY_ELEMENT = /* <ARRAY> */ LOCATION '(' EXPRESSION_LIST ')'
+.SUB_ARRAY = /* <ARRAY> */ LOCATION '(' LOWER_ELEMENT ':' UPPER_ELEMENT ')'
+    | /* <ARRAY> */ LOCATION '(' /* <INTEGER> */ EXPRESSION UP
+         ARRAY_LENGTH ')'
+.LOWER_ELEMENT = /* <LITERAL> */ EXPRESSION
+.UPPER_ELEMENT = /* <LITERAL> */ EXPRESSION
+.ARRAY_LENGTH  = /* <INTEGER_LITERAL> */ EXPRESSION
+.LOCATION_BUILT_IN_ROUTINE_CALL =
+                                                               /*??? */
+.STRUCTURE_FIELD = /* <STRUCTURE> */ LOCATION '.' /* <FIELD> */ NAME
+.LOCATION_PROCEDURE_CALL = /* <LOCATION> */ PROCEDURE_CALL
+.STRING_SLICE = /* <STRING> */ LOCATION '(' START_ ':' END_ ')'
+.START_ = /* <INTEGER> */ EXPRESSION
+.END_   = /* <INTEGER> */ EXPRESSION
+.ARRAY_SLICE = /* <ARRAY> */ LOCATION '(' FIRST ':' LAST ')'
+.FIRST = EXPRESSION
+.LAST  = EXPRESSION
+.DEREFERENCED_ROW = /* <ROW> */ EXPRESSION '->'
+ /*---------------------------------------------------------------------
+    5. VAULES AND THEIR OPERATIONS
+ */
+.SYNONYM_DEFINITION_STATEMENT = SYN SYNONYM_DEFINITION_LIST ';'
+.SYNONYM_DEFINITION_LIST = SYNONYM_DEFINITION
+    | SYNONYM_DEFINITION_LIST ',' SYNONYM_DEFINITION
+.SYNONYM_DEFINITION = NAME_LIST MODE_OPTION '=' /* <CONSTANT> */ VALUE
+.MODE_OPTION =
+             | MODE
+.PRIMITIVE_VALUE = DELOCATED_LOCATION
+                 | VALUE_NAME
+                 | LITERAL
+                 | TUPLE
+                 | VALUE_STRING_ELEMENT
+                 | VALUE_SUBSTRING
+                 | VALUE_STRING_SLICE
+                 | VALUE_ARRAY_ELEMENT
+                 | VALUE_SUB_ARRAY
+                 | VALUE_ARRAY_SLICE
+                 | VALUE_STRUCTURE_FIELD
+                 | REFERENCED_LOCATION
+                 | EXPRESSION_CONVERSION
+                 | VALUE_PROCEDURE_CALL
+                 | VALUE_BUILT_IN_ROUTINE_CALL
+                 | VALUE_START_EXPRESSION
+                 | VALUE_RECEIVE_EXPRESSION
+                 | VALUE_ZERO_ADIC_OPERATOR
+.DELOCATED_LOCATION = LOCATION
+.VALUE_NAME = /* <SYNONYM> */ NAME
+            | /* <VALUE_ENUMERATION> */ NAME
+            | /* <VALUE_DO_WITH> */ NAME
+            | /* <VALUE_RECEIVE_NAME
+.LITERAL = INTEGER_LITERAL
+         | BOOLEAN_LITERAL
+         | SET_LITERAL
+         | EMPTYNESS_LITERAL
+         | PROCEDURE_LITERAL
+         | CHARACTER_STRING_LITERAL
+         | BIT_STRING_LITERAL
+.INTEGER_LITERAL = NUMBER                       /*???*/
+.BOOLEAN_LITERAL = FALSE
+                 | TRUE
+.SET_LITERAL = SET_ELEMENT_NAME
+.EMPTYNESS_LITERAL = NULL
+.PROCEDURE_LITERAL = /* <GENERAL_PROCEDURE> */ NAME
+                   | /* <GENERAL_ENTRY> */ NAME
+.TUPLE = /* <MODE> */ NAME_OPTION '(:' ANY_TUPLE ':)'
+       | /* <MODE> */ NAME_OPTION '['  ANY_TUPLE ']'
+.ANY_TUPLE = POWERSET_TUPLE
+           | ARRAY_TUPLE
+           | STRUCTURE_TUPLE
+.POWERSET_TUPLE = EXPRESSION_OR_RANGE
+                | POWERSET_TUPLE ',' EXPRESSION_OR_RANGE
+.EXPRESSION_OR_RANGE = EXPRESSION
+                     | RANGE
+.RANGE = EXPRESSION ':' EXPRESSION
+.ARRAY_TUPLE = UNLABELLED_ARRAY_TUPLE
+             | LABELLED_ARRAY_TUPLE
+.UNLABELLED_ARRAY_TUPLE = VALUE
+                        | UNLABELLED_ARRAY_TUPLE ',' VALUE
+.LABELLED_ARRAY_TUPLE = CASE_LABEL_LIST ':' VALUE
+                      | LABELLED_ARRAY_TUPLE ',' CASE_LABEL_LIST ':' VALUE
+.STRUCTURE_TUPLE = UNLABELLED_STRUCTURE_TUPLE
+                 | LABELLED_STRUCTURE_TUPLE
+.UNLABELLED_STRUCTURE_TUPLE = VALUE
+                            | UNLABELLED_STRUCTURE_TUPLE ',' VALUE
+.LABELLED_STRUCTURE_TUPLE = FIELD_NAME_LIST ':' VALUE
+                          | LABELLED_STRUCTURE_TUPLE ','
+                              FIELD_NAME_LIST ':' VALUE
+.FIELD_NAME_LIST = '.' /* <FIELD> */ NAME
+                 | FIELD_NAME_LIST ',' '.' /* <FIELD> */ NAME
+.VALUE_STRING_ELEMENT = /* <STRING> */ EXPRESSION '(' STRING_INDEX ')'
+.VALUE_SUBSTRING = /* <STRING> */ EXPRESSION '(' LEFT_ELEMENT ':'
+                     RIGHT_ELEMENT ')'
+                 | /* <STRING> */ EXPRESSION '(' POSITION UP LENGTH ')'
+.VALUE_STRING_SLICE = /* <STRING> */ EXPRESSION '(' START_ ':' END_ ')'
+.VALUE_ARRAY_ELEMENT = /* <ARRAY> */ EXPRESSION '(' EXPRESSION_LIST ')'
+.VALUE_SUB_ARRAY = /* <ARRAY> */ EXPRESSION '(' LOWER_ELEMENT ':'
+                            UPPER_ELEMENT ')'
+                 | /* <ARRAY> */ EXPRESSION '(' /* <INTEGER> */ EXPRESSION UP
+                     ARRAY_LENGTH ')'
+.VALUE_ARRAY_SLICE = /* <ARRAY> */ EXPRESSION '(' FIRST ':' LAST ')'
+.VALUE_STRUCTURE_FIELD = STRUCTURE_EXPRESSION '.' FIELD_NAME
+.REFERENCED_LOCATION = '->' LOCATION
+.EXPRESSION_CONVERSION = MODE_NAME '(' EXPRESSION ')'
+.VALUE_PROCEDURE_CALL = /* <VALUE> */ PROCEDURE_CALL     /* ??? */
+.VALUE_BUILT_IN_ROUTINE_CALL =                                      /* ??? */
+.START_EXPRESSION = START /* <PROCESS> */ NAME '('
+     ACTUAL_PARAMETER_LIST_OPTION ')'
+.ACTUAL_PARAMETER_LIST_OPTION =
+                              | ACTUAL_PARAMETER_LIST
+.ACTUAL_PARAMETER_LIST = ACTUAL_PARAMETER
+                       | ACTUAL_PARAMETER_LIST ',' ACTUAL_PARAMETER
+.ACTUAL_PARAMETER = LOCATION
+                  | VALUE
+.RECEIVE_EXPRESSION = RECEIVE /* <BUFFER> */ LOCATION
+.ZERO_ADIC_OPERATOR = THIS
+.VALUE = EXPRESSION
+       | UNDEFINED_VALUE
+.UNDEFINED_VALUE = '*'
+.EXPRESSION = OPERAND_1
+            | SUB_EXPRESSION OR_OR_XOR OPERAND_1
+.SUB_EXPRESSION = EXPRESSION
+.OR_OR_XOR = OR
+           | XOR
+.OPERAND_1 = OPERAND_2
+           | SUB_OPERAND_1 AND OPERAND_2
+.SUB_OPERAND_1 = OPERAND_1
+.OPERAND_2 = OPERAND_3
+           | SUB_OPERAND_2 OPERATOR_3 OPERAND_3
+.SUB_OPERAND_2 = OPERAND_2
+.OPERATOR_3 = RELATIONAL_OPERATOR
+            | MEMBERSHIP_OPERATOR
+            | POWERSET_INCLUSION_OPERATOR
+.RELATIONAL_OPERATOR = '='
+                     | '/='
+                     | '>'
+                     | '>='
+                     | '<'
+                     | '<='
+.MEMBERSHIP_OPERATOR = IN
+.POWERSET_INCLUSION_OPERATOR = '<='
+                             | '>='
+                             | '<'
+                             | '>'
+.OPERAND_3 = OPERAND_4
+           | SUB_OPERAND_3 OPERATOR_4 OPERAND_4
+.SUB_OPERAND_3 = OPERAND_3
+.OPERATOR_4 = ARITHMETIC_ADDITIVE_OPERATOR
+            | STRING_CONCATENATION_OPERATOR
+            | POWERSET_DIFFERENCE_OPERATOR
+.ARITHMETIC_ADDITIVE_OPERATOR = '+'
+                              | '-'
+.STRING_CONCATENATION_OPERATOR = '//'
+.POWERSET_DIFFERENCE_OPERATOR = '-'
+.OPERAND_4 = OPERAND_5
+           | SUB_OPERAND_4 ARITHMETIC_MULTIPLICATIVE_OPERATOR OPERAND_5
+.SUB_OPERAND_4 = OPERAND_4
+.ARITHMETIC_MULTIPLICATIVE_OPERATOR = '*'
+                                    | '/'
+                                    | MOD
+                                    | REM
+.OPERAND_5 = MONADIC_OPERATOR_OPTION OPERAND_6
+.MONADIC_OPERATOR_OPTION =
+                         | MONADIC_OPERATOR
+.MONADIC_OPERATOR = '-'
+                  | NOT
+                  | STRING_REPETITION_OPERATOR
+.STRING_REPETITION_OPERATOR = '(' /* <INTEGER_LITERAL> */ EXPRESSION ')'
+.OPERAND_6 = PRIMITIVE_VALUE
+           | PARENTHESISED_EXPRESSION
+.PARENTHESISED_EXPRESSION = '(' EXPRESSION ')'
+ /*---------------------------------------------------------------
+    6. ACTIONS
+ */
+.ACTION_STATEMENT = NAME_COLON_OPTION ACTION HANDLER_OPTION
+                      /* <LABEL> */ NAME_OPTION ';'
+.NAME_COLON_OPTION =
+                   | NAME ':'
+.HANDLER_OPTION =
+                | HANDLER
+./* <LABEL> */ NAME_OPTION =
+                   | /* <LABEL> */ NAME
+.ACTION = BRACKETED_ACTION
+        | ASSIGNMENT_ACTION
+        | PROCEDURE_CALL_ACTION
+        | EXIT_ACTION
+        | RETURN_ACTION
+        | RESULT_ACTION
+        | GOTO_ACTION
+        | ASSERT_ACTION
+        | EMPTY_ACTION
+        | START_ACTION
+        | STOP_ACTION
+        | DELAY_ACTION
+        | CONTINUE_ACTION
+        | SEND_ACTION
+        | CAUSE_ACTION
+.BRACKETED_ACTION = IF_ACTION
+                  | CASE_ACTION
+                  | DO_ACTION
+                  | MODULE_
+                  | BEGIN_END_BLOCK
+                  | DELAY_CASE_ACTION
+                  | RECEIVE_CASE_ACTION
+.ASSIGNMENT_ACTION = SINGLE_ASSIGNMENT_ACTION
+                   | MULTIPLE_ASSIGNMENT_ACTION
+.SINGLE_ASSIGNMENT_ACTION = LOCATION ASSIGNMENT_SYMBOL  VALUE
+                          | LOCATION ASSIGNING_OPERATOR VALUE
+.MULTIPLE_ASSIGNMENT_ACTION = LOCATION ',' LOCATION ASSIGNMENT_SYMBOL VALUE
+                            | LOCATION ',' MULTIPLE_ASSIGNMENT_ACTION
+.ASSIGNING_OPERATOR = CLOSED_DYADIC_OPERATOR ASSIGNMENT_SYMBOL
+.CLOSED_DYADIC_OPERATOR = OR
+                        | XOR
+                        | AND
+                        | POWERSET_DIFFERENCE_OPERATOR
+                        | ARITHMETIC_ADDITIVE_OPERATOR
+                        | ARITHMETIC_MULTIPLICATIVE_OPERATOR
+.ASSIGNMENT_SYMBOL = ':='
+                   | '='
+.IF_ACTION = IF /* <BOOLEAN> */ EXPRESSION THEN_CLAUSE ELSE_CLAUSE_OPTION FI
+.ELSE_CLAUSE_OPTION =
+  /*        | ':='  */
+.THEN_CLAUSE = THEN ACTION_STATEMENT_LIST
+.ELSE_CLAUSE = ELSE ACTION_STATEMENT_LIST
+             | ELSIF /* <BOOLEAN> */ EXPRESSION THEN_CLAUSE ELSE_CLAUSE_OPTION
+.CASE_ACTION = CASE CASE_SELECTOR_LIST OF RANGE_LIST_OPTION
+                 CASE_ALTERNATIVES
+                 ELSE_CASE_OPTION
+               ESAC
+.RANGE_LIST_OPTION =
+                   | RANGE_LIST ';'
+.CASE_ALTERNATIVES = CASE_ALTERNATIVE
+                   | CASE_ALTERNATIVES CASE_ALTERNATIVE
+.ELSE_CASE_OPTION =
+                  | ELSE ACTION_STATEMENT_LIST
+.CASE_SELECTOR_LIST = CASE_SELECTOR
+                    | CASE_SELECTOR_LIST ',' CASE_SELECTOR
+.CASE_SELECTOR = /* <DISCRETE> */ EXPRESSION
+.RANGE_LIST = DISCRETE_MODE
+            | RANGE_LIST ',' DISCRETE_MODE
+.CASE_ALTERNATIVE = CASE_LABEL_SPECIFICATION_LIST
+                      ':' ACTION_STATEMENT_LIST
+.CASE_LABEL_SPECIFICATION_LIST = CASE_LABEL_SPECIFICATION
+                               | CASE_LABEL_SPECIFICATION_LIST
+                                   ',' CASE_LABEL_SPECIFICATION
+.CASE_LABEL_SPECIFICATION = CASE_LABEL_LIST
+                          | '(' ELSE ')'
+                          | IRRELEVANT
+.CASE_LABEL_LIST = CASE_LABEL
+                 | CASE_LABEL_LIST ',' CASE_LABEL
+.CASE_LABEL = /* <DISCRETE_LITERAL> */ EXPRESSION
+            | LITERAL_RANGE
+            | /* <DISCRETE_MODE> */ NAME
+.IRRELEVANT = '(' '*' ')'
+.DO_ACTION = DO CONTROL_PART ';' ACTION_STATEMENT_LIST OD
+           | DO                  ACTION_STATEMENT_LIST OD
+.CONTROL_PART = FOR_CONTROL WHILE_CONTROL
+              | FOR_CONTROL
+              | WHILE_CONTROL
+              | WITH_PART
+.FOR_CONTROL = FOR ITERATION_LIST             | FOR EVER
+.ITERATION_LIST = ITERATION
+                | ITERATION_LIST ',' ITERATION
+.ITERATION = VALUE_ENUMERATION
+           | LOCATION_ENUMERATION
+.VALUE_ENUMERATION = STEP_ENUMERATION
+                   | RANGE_ENUMERATION
+                   | POWERSET_ENUMERATION
+.STEP_ENUMERATION = LOOP_COUNTER ASSIGNMENT_SYMBOL START_VALUE
+                      STEP_OPTION
+                      DOWN_OPTION END_VALUE
+.STEP_OPTION =
+             | STEP
+.DOWN_OPTION =
+             | DOWN
+.LOOP_COUNTER = NAME
+.START_VALUE = EXPRESSION
+.STEP      = BY /* <INTEGER> */ EXPRESSION
+.END_VALUE = TO EXPRESSION
+.RANGE_ENUMERATION = LOOP_COUNTER DOWN_OPTION IN DISCRETE_MODE
+.POWERSET_ENUMERATION = LOOP_COUNTER DOWN_OPTION IN
+                /* <POWERSET> */ EXPRESSION
+.LOCATION_ENUMERATION = LOOP_COUNTER DOWN_OPTION IN /* <ARRAY> */ LOCATION
+.WHILE_CONTROL = WHILE /* <BOOLEAN> */ EXPRESSION
+.WITH_PART     = WITH WITH_CONTROL
+               | WITH_PART ',' WITH_CONTROL
+.WITH_CONTROL  = /* <STRUCTURE> */ LOCATION
+               | /* <STRUCTURE> */ EXPRESSION
+.EXIT_ACTION = EXIT /* <LABEL> */ NAME
+.CALL_ACTION = CALL_OPTION PROCEDURE_CALL
+             | CALL_OPTION BUILT_IN_ROUTINE_CALL
+.CALL_OPTION =
+             | CALL
+.PROCEDURE_CALL = /* <PROCEDURE> */ NAME       ACTUAL_PARAMETERS_PACK
+                | /* <PROCEDURE> */ EXPRESSION ACTUAL_PARAMETERS_PACK
+.ACTUAL_PARAMETERS_PACK = '(' ')'
+                        | '(' ACTUAL_PARAMETER_LIST ')'
+.ACTUAL_PARAMETER_LIST = ACUTAL_PARAMETER
+                       | ACTUAL_PARAMETER_LIST ',' ACTUAL_PARAMETER
+.ACTUAL_PARAMETER = VALUE
+                  | STATIC_MODE_LOCATION
+.RETURN_ACTION = RETURN
+               | RETURN RESULT_
+.RESULT_ACTION = RESULT RESULT_
+.RESULT = VALUE
+        | STATIC_MODE_LOCATION
+.GOTO_ACTION = GOTO /* <LABEL> */ NAME
+.ASSERT_ACTION = ASSERT /* <BOOLEAN> */ EXPRESSION
+.EMPTY_ACTION =
+.CAUSE_ACTION = CAUSE EXCEPTION_NAME
+.START_ACTION = START_EXPRESSION
+              | START_EXPRESSION SET /* <INSTANCE> */ LOCATION
+.STOP_ACTION = STOP
+.CONTINUE_ACTION = CONTINUE /* <EVENT> */ LOCATION
+.DELAY_ACTION = DELAY /* <EVENT> */ LOCATION
+              | DELAY /* <EVENT> */ LOCATION PRIORITY_
+.PRIORITY_ = PRIORITY INTEGER_EXPRESSION
+.DELAY_CASE_ACTION = DELAY CASE SET_CLAUSE_OPTION PRIORITY_SEMI_OPTION
+                       DELAY_ALTERNATIVES
+                     ESAC
+.SET_CLAUSE_OPTION =
+                   | SET /* <INSTANCE> */ LOCATION ';'
+.PRIORITY_SEMI_OPTION =
+                 | PRIORITY ';'
+.DELAY_ALTERNATIVES = DELAY_ALTERNATIVE
+                    | DELAY_ALTERNATIVES DELAY_ALTERNATIVE
+.DELAY_ALTERNATIVE = '(' EVENT_LIST ')' ':' ACTION_STATEMENT_LIST
+.EVENT_LIST = /* <EVENT> */ LOCATION
+            | EVENT_LIST ',' /* <EVENT> */ LOCATION
+.SEND_ACTION = SEND_SIGNAL_ACTION
+             | SEND_BUFFER_ACTION
+.SEND_SIGNAL_ACTION = SEND /* <SIGNAL> */ NAME VALUE_LIST_OPTION
+                        TO_INSTANCE_EXPRESSION_OPTION PRIORITY_OPTION
+.VALUE_LIST_OPTION =
+                   | '(' VALUE_LIST ')'
+.VALUE_LIST = VALUE
+            | VALUE_LIST ',' VALUE
+.TO_INSTANCE_EXPRESSION_OPTION =
+                               | TO /* <INSTANCE> */ EXPRESSION
+ .PRIORITY_OPTION =
+                 | PRIORITY
+.SEND_BUFFER_ACTION = SEND /* <BUFFER> */ LOCATION '(' VALUE ')'
+                             PRIORITY_OPTION
+.RECEIVE_CASE_ACTION = RECEIVE_SIGNAL_CASE_ACTION
+                     | RECEIVE_BUFFER_CASE_ACTION
+.RECEIVE_SIGNAL_CASE_ACTION =    RECEIVE CASE SET_CLAUSE_OPTION
+                                   SIGNAL_RECEIVE_ALTERNATIVES
+                                   ELSE_CASE_OPTION ESAC
+.SET_CLAUSE_OPTION =
+                   | SET /* <INSTANCE> */ LOCATION
+.SIGNAL_RECEIVE_ALTERNATIVES = SIGNAL_RECEIVE_ALTERNATIVE
+                             | SIGNAL_RECEIVE_ALTERNATIVES
+                                 SIGNAL_RECIEVE_ALTERNATIVE
+.SIGNAL_RECIEVE_ALTERNATIVE = '(' /* <SIGNAL> */ NAME IN_NAME_LIST_OPTION ')'
+                                ':' ACTION_STATEMENT_LIST
+.IN_NAME_LIST =
+              | IN NAME_LIST
+.RECEIVE_BUFFER_CASE_ACTION = RECEIVE CASE SET_CLAUSE_OPTION
+                                BUFFER_RECEIVE_ALTERNATIVES
+                                ELSE_CASE_OPTION ESAC
+.BUFFER_RECEIVE_ALTERNATIVES = BUFFER_RECEIVE_ALTERNATIVE
+                             | BUFFER_RECEIVE_ALTERNATIVES
+                                  BUFFER_RECIEVE_ALTERNATIVE
+.BUFFER_RECIEVE_ALTERNATIVE = '(' /* <BUFFER> */ LOCATION IN NAME ')'
+                                ':' ACTION_STATEMENT_LIST
+ /*------------------------------------------------------------------------
+       7. PROGRAM STRUCTURE
+ */
+.BEGIN_END_BODY = DATA_STATEMENT_LIST ACTION_STATEMENT_LIST
+.PROC_BODY = DATA_STATEMENT_LIST ACTION_STATEMENT
+           | DATA_STATEMENT_LIST ENTRY_STATEMENT
+.PROCESS_BODY = DATA_STATEMENT_LIST ACTION_STATEMENT_LIST
+.MODULE_BODY = ACTION_STATEMENT_LIST
+             | DATA_STATEMENT MODULE_BODY
+             | VISIBILITY_STATEMENT MODULE_BODY
+.REGION_BODY =
+             | REGION_BODY DECLARATION_STATEMENT
+             | REGION_BODY DEFINITION_STATEMENT
+             | REGION_BODY VISIBILITY_STATEMENT
+.ACTION_STATEMENT_LIST =
+                       ACTION_STATEMENT_LIST ACTION_STATEMENT   /* ??? */
+.DATA_STATEMENT_LIST =
+                     | DATA_STATEMENT_LIST DATA_STATEMENT
+.DATA_STATEMENT = DECLARATION_STATEMENT
+                | DEFINITION_STATEMENT
+                | REGION
+ /*GF
+.DEFINITION_STATEMENT = SYNMODE_DEFINITION_STATEMENT
+                      | NEWMODE_DEFINITION_STATEMENT
+                      | SYNONYM_DEFINITION_STATEMENT
+                      | PROCEDURE_DEFINITION_STATEMENT
+                      | PROCESS_DEFINITION_STATEMENT
+                      | SIGNAL_DEFINITION_STATEMENT
+                      | EMPTY_STATEMENT
+ GF*/
+.BEGIN_END_BLOCK = BEGIN BEGIN_END_BODY END
+.PROCEDURE_DEFINITION_STATEMENT = NAME ':' PROCEDURE_DEFINITION
+                                    HANDLER_OPTION
+                                    /* <PROCEDURE> */ NAME_OPTION ';'
+.HANDLER_OPTION =
+                | HANDLER
+.PROCEDURE_DEFINITION = PROC '(' FORMAL_PARAMETER_LIST_OPTION ')'
+                          RESULT_SPEC_OPTION EXCEPTION_OPTION
+                          PROCEDURE_ATTRIBUTES ';'
+                          PROC_BODY END
+.FORMAL_PARAMETER_LIST_OPTION =
+                              | FORMAL_PARAMETER_LIST
+.RESULT_SPEC_OPTION =
+                    | RESULT_SPEC
+.EXCEPTION_OPTION =
+                  | EXCEPTIONS '(' EXCEPTION_LIST ')'
+.FORMAL_PARAMETER_LIST = FORMAL_PARAMETER
+                       | FORMAL_PARAMETER_LIST ',' FORMAL_PARAMETER
+.FORMAL_PARAMETER = NAME_LIST PARAMETER
+.PROCEDURE_ATTRIBUTES = GENERALITY
+                      | GENERALITY RECURSIVE
+                      | RECURSIVE
+                      |
+.GENERALITY = GENERAL
+            | SIMPLE
+            | INLINE
+.ENTRY_STATEMENT = NAME ':' ENTRY_DEFINITION ';'
+.ENTRY_DEFINITION = ENTRY
+.PROCESS_DEFINITION_STATEMENT = NAME ':' PROCESS_DEFINITION HANDLER_OPTION
+                                  /* <PROCESS> */ NAME_OPTION
+.PROCESS_DEFINITION = PROCESS '(' FORMAL_PARAMETER_LIST_OPTION ')' ';'
+                          PROCESS_BODY END
+.MODULE_ = MODULE MODULE_BODY END
+.REGION = NAME_COLON_OPTION REGION REGION_BODY END
+            HANDLER_OPTION /* <REGION> */ NAME_OPTION ';'
+.NAME_COLON_OPTION =
+                   | NAME ':'
+.PROGRAM = /* <MODULE> */ ACTION_STATEMENT
+         | REGION
+         | PROGRAM /* <MODULE> */ ACTION_STATEMENT
+         | PROGRAM REGION
+.CHILL_PROGRAM = PROGRAM
+ /*-------------------------------------------------------------------------
+     8. CONCURRENT EXECUTIONS
+ */
+.SIGNAL_DEFINITION_STATEMENT = SIGNAL SIGNAL_DEFINITION
+    | SIGNAL_DEFINITION_STATEMENT ',' SIGNAL_DEFINITION
+.SIGNAL_DEFINITION = NAME MODE_PACK_OPTION TO_PROCESS_NAME_OPTION
+.MODE_PACK_OPTION =
+                  | '=' '(' MODE_LIST ')'
+.MODE_LIST = MODE
+           | MODE_LIST ',' MODE
+.TO_PROCESS_NAME_OPTION =
+                        | TO /* <PROCESS> */ NAME
+ /*--------------------------------------------------------------------------
+     9. GENERAL SEMANTIC PROPERTIES
+ */
+.VISIBILITY_STATEMENT = GRANT_STATEMENT
+                      | SEIZE_STATEMENT
+.GRANT_STATEMENT = GRANT GRANT_WINDOW PERVASIVE_OPTION
+.PERVASIVE_OPTION =
+                  | PERVASIVE
+.GRANT_WINDOW = GRANTED_ELEMENT_LIST
+              | ALL
+.GRANTED_ELEMENT_LIST = GRANTED_ELEMENT
+                      | GRANTED_ELEMENT_LIST ',' GRANTED_ELEMENT
+.GRANTED_ELEMENT = NON_RESERVED_NAME
+                 | NEWMODE_NAME FORBID '(' FIELD_NAME_LIST ')'
+                 | NEWMODE_NAME FORBID ALL
+.FIELD_NAME_LIST = FIELD_NAME
+                 | FIELD_NAME_LIST ',' FIELD_NAME
+.SEIZE_STATEMENT = SEIZE SEIZE_WINDOW ';'
+.SEIZE_WINDOW = SEIZED_ELEMENT_LIST
+              | ALL
+.SEIZED_ELEMENT_LIST = SEIZED_ELEMENT
+                     | SEIZED_ELEMENT_LIST ',' SEIZED_ELEMENT
+.SEIZED_ELEMENT = MODULION_NAME ALL
+                | NAME
+.MODULION_NAME = MODUL_NAME
+               | REGION_NAME
+ /*----------------------------------------------------------------------
+     10. EXCEPTION HANDLING
+ */
+.HANDLER = ON ON_ALTERNATIVE_LIST ELSE_CASE_OPTION END
+.ON_ALTERNATIVE_LIST = ON_ALTERNATIVE
+                     | ON_ALTERNATIVE_LIST ON_ALTERNATIVE
+.ON_ALTERNATIVE = '(' EXCEPTION_LIST ')' ':' ACTION_STATEMENT_LIST
+.BUILT_IN_ROUTINE_CALL = BUILT_IN_ROUTINE_NAME
+                           '(' BUILT_IN_PARAMETER_LIST_OPTION ')'
+.BUILT_IN_ROUTINE_PARAMETER_LIST_OPTION =
+                                        | BUILT_IN_ROUTINE_PARAMETER_LIST
+.BUILT_IN_ROUTINE_PARAMETER_LIST = BUILT_IN_ROUTINE_PARAMETER
+                                 | BUILT_IN_ROUTINE_PARAMETER_LIST
+                                     ',' BUILT_IN_ROUTINE_PARAMETER
+.BUILT_IN_ROUTINE_PARAMETER = VALUE
+                            | LOCATION
+                            | /* <NON_RESERVED> */ NAME
+.
+]
+/LOGOFF

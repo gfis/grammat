@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ant-buildfile for commandline, web application and web service
+    @(#) $Id$
+    2022-01-21: copied from numword
+-->
+<!--
+ * Copyright (c) 2022 Dr. Georg Fischer <dr.georg.fischer@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<project name="grammat" default="all" basedir=".">
+    <property name="app.version"        value="1.1"/>
+    <property name="app.main-class"     value="org.teherba.grammat.Parser"/>
+    <property name="tomcat.base"        value="/var/lib/tomcat" />
+    <property name="tomcat.home"        value="/usr/share/tomcat" />
+    <import file="build-import.xml" />
+
+    <target name="generate">
+    </target>
+
+    <target name="core.jar">
+        <!-- without libraries, without web files -->
+        <jar jarfile="${dist.home}/${ant.project.name}-core.jar"
+                basedir="${build.classes}"
+                manifest="${build.classes}/META-INF/MANIFEST.MF"
+                excludes="web/** **/web/*.class **/*Servlet.class"
+                >
+        </jar>
+    </target>
+
+    <target name="fill.lib">
+        <copy todir="${lib.home}">
+            <fileset dir="${tomcat.base}/openlib">
+                <include name="common-core.jar" />
+                <include name="log4j-1.2.17.jar" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="test" depends="deploy,test.command,test.servlet,test.service" />
+    <target name="test.command"><!-- run the program from the commandline -->
+        <antcall target="run">
+            <param name="class" value="org.teherba.grammat.Parser" />
+            <param name="args"  value="-l de"                 />
+        </antcall>
+    </target>
+</project>

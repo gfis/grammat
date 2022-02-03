@@ -1,0 +1,140 @@
+/.SPL LOGON 
+/.SPL DO DO.EXTRA,('(PRIMARY)',PARM='ASSERT=200') 
+EOF IDENTIFIER NUMBER STRING 
+[AXIOM = STATEMENT_LIST 
+.STATEMENT_LIST    = STATEMENT 
+                     | STATEMENT_LIST STATEMENT 
+.STATEMENT         = BASIC_STATEMENT 
+                     | CONDITIONAL_STATEMENT 
+.BASIC_STATEMENT   = ASSIGNMENT_STATEMENT ';' 
+                     | GOTO_STATEMENT ';' 
+                     | RETURN_STATEMENT ';' 
+                     | CALL_STATEMENT ';' 
+                     | DECLARATION_STATEMENT ';' 
+                     | BLOCK ';' 
+                     | GROUP ';' 
+                     | PROCEDURE_DEFINITION ';' 
+                     | ALLOCATION_STATEMENT ';' 
+                     | FREE_STATEMENT ';' 
+                     | ';' 
+                     | LABEL_DEFINITION  BASIC_STATEMENT 
+.CONDITIONAL_STATEMENT = IF_CLAUSE THEN STATEMENT 
+                         | IF_CLAUSE THEN BASIC_STATEMENT ELSE STATEMENT 
+                         | LABEL_DEFINITION CONDITIONAL_STATEMENT 
+.IF_CLAUSE         = IF EXPRESSION 
+.BLOCK             = BLOCK_HEAD STATEMENT_LIST ENDING 
+.BLOCK_HEAD        = BEGIN ';' 
+.GROUP             = GROUP_HEAD STATEMENT_LIST ENDING 
+.LABEL_DEFINITION  = IDENTIFIER ':' 
+.ENDING            = END 
+                     | END IDENTIFIER 
+                     | LABEL_DEFINITION ENDING 
+.PROCEDURE_DEFINITION = PROCEDURE_HEAD STATEMENT_LIST ENDING 
+.PROCEDURE_HEAD    = LABEL_DEFINITION PROCEDURE FORMAL_PARAMETERS 
+                     PROC_ATTRIBUTE ';' 
+.PROC_ATTRIBUTE    = 
+                     | TYPE 
+.FORMAL_PARAMETERS = 
+                     | '(' PARAMETER_LIST ')' 
+.PARAMETER_LIST    = IDENTIFIER 
+                     | PARAMETER_LIST ','  IDENTIFIER 
+.DECLARATION_STATEMENT = DECLARE DECLARATION_LIST 
+.DECLARATION_LIST  = DECLARATION_ELEMENT 
+                     | DECLARATION_LIST ','  DECLARATION_ELEMENT 
+.DECLARATION_ELEMENT = DECLARATION_PRIMARY 
+                       | DECLARATION_PRIMARY ATTRIBUTE_LIST 
+.ATTRIBUTE_LIST    = ATTRIBUTE 
+                     | ATTRIBUTE_LIST ATTRIBUTE 
+.ATTRIBUTE         = '(' ASTERISK_LIST ')' 
+                     | TYPE 
+                     | ENTRY 
+                     | LABEL 
+.DECLARATION_PRIMARY = IDENTIFIER 
+                       | '(' DECLARATION_LIST ')' 
+.ASTERISK_LIST     = '*' 
+                     | ASTERISK_LIST ','  '*' 
+.TYPE              = BIT 
+                     | FIXED 
+                     | FLOAT 
+                     | CHARACTER 
+.ASSIGNMENT_STATEMENT = VARIABLE '=' EXPRESSION 
+                        | VARIABLE ','  ASSIGNMENT_STATEMENT 
+.GOTO_STATEMENT    = GO_TO VARIABLE 
+.GO_TO             = GO TO 
+                     | GOTO 
+.RETURN_STATEMENT  = RETURN 
+                     | RETURN EXPRESSION 
+.CALL_STATEMENT    = CALL VARIABLE 
+.ALLOCATION_STATEMENT = ALLOCATE ALLOCATION_LIST 
+.ALLOCATION_LIST   = ALLOCATION_ELEMENT 
+                     | ALLOCATION_LIST ','  ALLOCATION_ELEMENT 
+.ALLOCATION_ELEMENT= IDENTIFIER '(' BOUNDS_LIST ')' 
+.BOUNDS_LIST       = BOUNDS 
+                     | BOUNDS_LIST ','  BOUNDS 
+.BOUNDS            = EXPRESSION 
+                     | EXPRESSION ':' EXPRESSION 
+.FREE_STATEMENT    = FREE FREE_LIST 
+.FREE_LIST         = IDENTIFIER 
+                     | FREE_LIST ','  IDENTIFIER 
+.GROUP_HEAD        = CONTROL_CLAUSE ';' 
+.CONTROL_CLAUSE    = REPETITION_CONTROL 
+                     | CONTROL_CLAUSE CASE_SELEKTOR 
+.CASE_SELEKTOR     = CASE ARITHMETIC_EXPRESSION 
+.REPETITION_CONTROL = WHILE_LIST 
+                      | ITERATION_LIST 
+.WHILE_LIST        = DO 
+                     | WHILE_LIST WHILE_CLAUSE 
+.WHILE_CLAUSE      = WHILE EXPRESSION 
+.ITERATION_LIST    = DO_VARIABLE '=' ITERATION_ELEMENT 
+                     | ITERATION_LIST ','  ITERATION_ELEMENT 
+.DO_VARIABLE       = DO VARIABLE 
+.ITERATION_ELEMENT = ITERATION_HEAD INCREMENTATION_CONTROL 
+                     | ITERATION_ELEMENT WHILE_CLAUSE 
+.ITERATION_HEAD    = EXPRESSION 
+.INCREMENTATION_CONTROL =  TO ARITHMETIC_EXPRESSION 
+                           | BY ARITHMETIC_EXPRESSION 
+                                  BY ARITHMETIC_EXPRESSION 
+                           | BY ARITHMETIC_EXPRESSION 
+                                  TO ARITHMETIC_EXPRESSION 
+.EXPRESSION        = LOGICAL_FACTOR 
+                     | EXPRESSION '|' LOGICAL_FACTOR 
+.LOGICAL_FACTOR    = LOGICAL SECONDARY 
+                     | LOGICAL_FACTOR '&' LOGICAL_SECONDARY 
+.LOGICAL_SECONDARY = LOGICAL_PRIMARY 
+                     | ' ' LOGICAL_SECONDARY 
+.LOGICAL_PRIMARY   = STRING_EXPRESSION 
+                     | STRING_EXPRESSION RELATION STRING_EXPRESSION 
+.RELATION          = '<' 
+                     | '>' 
+                     | '=' 
+                     | '<=' 
+                     | '>=' 
+                     | ' <' 
+                     | ' >' 
+                     | ' =' 
+.STRING_EXPRESSION = ARITHMETIC_EXPRESSION 
+                     | STRING_EXPRESSION '||' ARITHMETIC_EXPRESSION 
+.ARITHMETIC_EXPRESSION = TERM 
+                         | ARITHMETIC_EXPRESSION '+' TERM 
+                         | ARITHMETIC_EXPRESSION '-' TERM 
+.TERM              = FACTOR 
+                     | TERM '*' FACTOR 
+                     | TERM '/' FACTOR 
+.FACTOR            = PRIMARY 
+                     | PRIMARY '**' FACTOR 
+                     | '+' FACTOR 
+                     | '-' FACTOR 
+.PRIMARY           = CONSTANT 
+                     | VARIABLE 
+                     | '(' EXPRESSION ')' 
+                     | TYPE '(' EXPRESSION ')' 
+.VARIABLE          = IDENTIFIER 
+                     | IDENTIFIER '(' SUBSCRIPT_LIST ')' 
+.SUBSCRIPT_LIST    = SUBSCRIPT 
+                     | SUBSCRIPT_LIST ',' SUBSCRIPT 
+.SUBSCRIPT         = EXPRESSION 
+                     | '*' 
+.CONSTANT = NUMBER | STRING | BITSTRING 
+. 
+] 
+/LOGOFF 

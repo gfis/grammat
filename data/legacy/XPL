@@ -1,0 +1,267 @@
+/.XPL LOGON
+/.XPL      DO DO.EXTRA,('(PRIMARY)',PARM=SINGLE) 
+EOF IDENTIFIER NUMBER STRING
+[AXIOM = PROGRAM.
+PROGRAM = 
+      STATEMENT_LIST 
+      . 
+  
+STATEMENT_LIST = 
+      STATEM   | 
+      STATEMENT_LIST  STATEMENT 
+      . 
+  
+STATEMENT = 
+      BASIC_STATENT 
+      | 
+   IF_STATEMENT 
+      . 
+  
+B_STATEMENT = 
+      ASSIGN 
+ ROUP ';' 
+     | 
+      PROCEE_DEFINITIO
+      | 
+      RETURN_STATEMENT ';' 
+      | 
+      CALL_STATEMENT ';' 
+      | 
+      GOTO_STATEMENT ';' 
+      | 
+      DECLARATION_STATEMENT ';' 
+      | 
+      ';' 
+      | LABEL_DEFINITION BASIC_STATEMENT 
+      . 
+  
+IF_STATEMENT = 
+      IF_CLAUSE STATEMENT 
+      | 
+      IF_CLAUSE TRUE_PART STATEMENT 
+      | 
+      LABEL_DEFINITION IF_STATEMENT 
+      . 
+  
+IF_CLAUSE = 
+      IF EXPRESSIHEN 
+      . TRUE_PART = 
+      BASIC_STATEMENT ELSE 
+      . 
+  
+GROUP = 
+      GROUP_HEAD ENDI    . 
+  EAD = 
+      DO ';' 
+      | 
+      DO STEP_DEFINITION ';' 
+ 
+      DO WHILE_CLAUSE ';' 
+      | 
+      DO CASE_SELEKTOR ';' 
+      | 
+      GROUP_HEAD STATEMENT 
+      . 
+  
+STEP_DEFINITION = 
+      VARIAPLACE EXPRESSION ITERATION_CONTROL 
+      . 
+  
+ITERATION_CONTROL = 
+      TO PRESSION 
+      | 
+      TO EXPRESSION BY EXPRESSION 
+      . 
+  
+WHILE_CLAUSE = 
+      WHILE_EXION 
+      . 
+  
+CASE_SELEKTOR = 
+      CASESSI
+PROCEDURE_DEFINITION = 
+      OCEDURE_HEAD STATEMENT_LIST ENDING 
+      . 
+  
+PROCEDURE_HEAD = 
+      PROCED;' 
+      | 
+      PROCEDURE_NAME TYPE ';' | 
+      PROCEDURE_NAME PARAMETER_LIST ';' 
+      | 
+      PROCEDURE_NAME PARAMETER_LIST TYPE 
+      . 
+  
+PROCEDURE_NAME = 
+      LABEL_DEFINITION  PROCEDURE 
+      . 
+  
+PARAMETER_LIST = 
+      '(' PAERS ')' 
+      . 
+  
+PARAMETERS = 
+      IDENTIFER  PARAMETERS ',DENTIFIER 
+  
+      . 
+  
+ENDING = 
+      END 
+      | 
+    END IDR 
+      |  LABEL_DE ENDING 
+    
+  
+LABEL_DEFINITION = 
+      INTI . 
+  
+RETURN_STATEMENT = 
+      RETURN 
+      | 
+      RETURN EXPRESSION 
+      . 
+  
+CALL_STATEMENT = 
+      CALL V      . 
+  
+GOTO_STATEMENT = 
+      GOTO_SENTIFIER 
+      . 
+  
+GOTO_SYMBOL = 
+      GO TO 
+    GOTO 
+      .
+  
+  
+DECLARN_STATEMEN    DECLATI   RATION_STATEMENT ',' DECLARATION_ELEMENT 
+      . 
+  
+DECLARATION_ELEMENT = 
+      TYPE_DECLARATION 
+      | 
+      IDENTIFIER LITERALLY STRING 
+      . 
+  
+TYPE_DECLARATION = 
+      IDENR_SPECIFICATION TYPE 
+      | 
+      IDENTIFIER_SPECIFICATION '(' NUMBER ')' TYPE 
+      | 
+      TYPE_DECLARATION INITIAL_LIST 
+      . 
+  
+TYPE = 
+      FIXED 
+      CHACTER 
+      LABEL 
+  | 
+      BIT '(NUMBER ')' 
+  . 
+ _SPECIFICATION = 
+      IDENT 
+      | 
+      '(' IDENTIFIER_LIST ')' 
+      . 
+  
+IDENTIFIER_LIST = 
+      IDENT 
+      | 
+      IDENTIFIER_LIST',' IDENT     . 
+  
+INITIAL_LIST = 
+      INITIAL '(' CONSTANT_LIST ')' 
+      . 
+  
+CONSTANT_LIST = 
+      CONSTANT 
+      | 
+      CONSTANT_LIST ',' CONSTANT 
+      . 
+  
+ASSIGNMENT = 
+      VARIABLE 'PRESSION 
+     
+      LEFT_PART ASSIGNMENT 
+     . 
+  
+LEFT_PART = 
+      VARIABLE ',' 
+      . 
+  
+EXPRESSION = 
+      LOGICAL_FA     | 
+      RESSION '|' LOGICAL_FACTOR 
+      . 
+  
+LOGICAL_FACTOR = 
+      LOGICAONDARY | 
+      LOGICAL_FACTOR '&' LOGICAL_SECONDARY 
+      . 
+  
+LOGICAL_SECONDARY = 
+      LOGAL_PRIMARY 
+      | 
+      ' ' LOGICAL_PRIMARY 
+      . 
+  
+LOGICAL_PRIMARY = 
+      STRINION 
+      | 
+      STRING_EXPRESSION RELATIING_EXPRESSION 
+      . 
+  
+RELATION = 
+      '=' | '>' | '<' | ' =' | '>=' | '<=' 
+      . 
+  
+STRING_EXPRESSION = 
+      ARIETIC_EXPRESSION 
+      | 
+      STRING_EXPRESSION '||' ARITHMETIC_EXPRESSION 
+      . 
+  
+ARITHMETIC_EXPRESSION = 
+     TERM 
+      | 
+      ARITHMETIC_EXPRESSION '+' TERM 
+      | 
+      ARITHMETIC_EXPRESSION '-' TERM 
+      | 
+      '+' TERM 
+      | 
+      '-' TERM 
+      . 
+  
+TERM = 
+      PRIMARY 
+       RY 
+      | 
+      TERM '/' PRIMARY 
+      | 
+      TERM MOD PRIMARY 
+      . 
+  
+PRIMARY = 
+      CONSTANT 
+     VARIABLE  | 
+      '(' EXRESSION ')' 
+      . 
+  
+CONSTANT = 
+      STRING 
+    | 
+      NUM      . 
+  
+VABLE = 
+TIFIER 
+      | 
+    '(' EXPRET ')' 
+  
+EXPRESSION_LIST = 
+      EXPRESSION 
+      | 
+      EXPRESSION_LIST ',' EXPRESSION 
+      . 
+] 
+/LOGOFF

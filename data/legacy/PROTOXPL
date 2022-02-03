@@ -1,0 +1,69 @@
+/.PROTOXPL LOGON
+/.PROTOXPL DO DO.EXTRA,('(PRIMARY)') 
+ /* PROTO-XPL FOR SKELETON-COMPILER BY MC KEEMAN */ 
+EOF IDENTIFIER NUMBER STRING
+[AXIOM = STATEMENT_LIST.
+STATEMENT_LIST = 
+      STATEMENT 
+      | 
+      STATEMENT_LIST STATEMENT 
+      . 
+  
+STATEMENT = ASSIGNMENT ';' 
+   
+  
+ASSIGNMENT = 
+      VARIABLE ' EXPRESSION 
+   . 
+  
+EXPRESSION = 
+      ARITHMETIC
+      | 
+    F_CLAUSE THEN EXPRESSION EESSION 
+      . 
+  
+IF_CLAUSE = 
+      IF BOOLEAN 
+      . 
+  
+BOOLEAN = 
+      TRUE 
+      |LSE 
+         EXPRESSIOATION EXPRES
+      | 
+      IF_CLAUSE THEN BOOLEAN ELSE BOOLEAN 
+      . 
+  
+RELATION = 
+      '<' | '>' | '=' 
+      . 
+  
+ARITHMETIC_EXPRESSION = 
+           | 
+      ARITHMETIC_EXPRESSION '+' TERM 
+      | 
+      ARITHMETIC_EXPRESSION '-' TERM 
+      . 
+  
+TERM = 
+      PRIMARY 
+      | 
+      TERM '*' PRIMARY 
+      | 
+      TERM '/' PRIMARY 
+      . 
+  
+PRIMARY = 
+      VARIABLE 
+     NUMBER 
+  
+      '(' EXPRSSION ')' 
+   . 
+VARIABLE = 
+      IDENTIFER 
+      | 
+      VARIABLE '(' EXPRESSION ')' 
+      . 
+]
+/LOGOFF
+/LOGOFF

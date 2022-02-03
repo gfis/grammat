@@ -1,0 +1,84 @@
+ OUTTST: PROCEDURE (INPACC,OUTEND,TREALO);
+ /* TESTS THE OUTPUT-DELAY STATES IN 'PUD' AND SETS */
+ /* 'OUTEND' ( -> ON 'TRES' ) ACCORDING TO THE OUT- */
+ /* PUT-DELAY STATES.                               */
+ /* AUTHOR: HORST RUETHING         SEPTEMBER 1979   */
+  
+     ,TREALO  /*  COMPLETE TRE-OUTPUT               */
+    ,OUTEND  /* -> ON 'TRES'                        */
+             /*    END OF POSSIBLE OUTPUT           */
+      ) BIN FIXED ;
+ 
+ DCL META EXTERNAL BIN FIXED;
+ 
+ DCL I BIN FIXED;
+            /* 'OUTTST'.                            */
+    BIN FIXED INIT(0);
+  
+ DCL ASSERT ENTRY(BIN FIXED,BIN FIXED,BIN FIXED);
+ DCL OUTCON ENTRY;
+ DCL PARASK ENTRY(CHAR(*),BIN FIXED) RETURNS (BIN FIXED);
+ 
+ %INCLUDE PUDS;
+ %INCLUDE SETS;
+ %INCLUDE STAS;
+ %INCLUDE TRES;
+ 
+   OUTSTC = PARASK('OUTSTC',0) ;
+   IF OUTSTC=1 THEN
+     PUT FILE(SYSPRINT) EDIT(' CALL OF OUTTST, OUTEND , FPUD',
+              OUTEND,FPUD) (SKIP,A,F(6),F(6));
+   IF INPACC=1 THEN
+     /* ITEACT(ITEM) = ACCEPT */
+     OUTEND = PUDEND(FPUD-2);
+   ELSE DO;
+     I = 2;
+               I < FPUD);
+       IF OUTSTC=1 THEN
+         PUT FILE(SYSPRINT) EDIT (' ******* STATE',PUD(I)
+            ,'  PUDMAR',PUDMAR(I)) (SKIP,A,F(6),A,F(6));
+       I = I + 1;
+     END;
+     IF OUTSTC=1 THEN
+       PUT FILE(SYSPRINT) EDIT (' ******* STATE',PUD(I)
+     IF I = FPUD & I > 2 & META = 1 THEN DO;
+       TREALO = 1;
+       I = I - 1;
+     END;
+     ELSE DO;
+       TREALO = 0;
+       I = I - 2;
+     END;
+     DO WHILE (I>1 & (PUDBEG(I) = 0 | PUDEND(I) = TREHIB));
+       I = I - 1;
+     END;
+     IF I = 1 | PUDMAR(I) < 0 THEN DO;
+       CALL ASSERT(114,I,PUD(I));
+       IF OUTSTC=1 THEN
+         CALL OUTCON;
+       STOP;
+     END;
+     ELSE DO;
+       IF TREALO =1 THEN
+         PUD(1) = I;
+       IF PUDEND(I)  = 0 THEN
+         OUTEND = PUDEND(I);
+       ELSE 
+         OUTEND = PUDBEG(I);
+     END;
+     IF OUTSTC=1 THEN
+       PUT FILE(SYSPRINT) EDIT ('OUTPUT-STATE****** ',PUD(I)
+             ,' PUDBEG ',PUDBEG(I),' PUDEND ',PUDEND(I)
+             ) (SKIP,A,F(6),A,F(6),A,F(6));
+     DO WHILE (PUDMAR(I) = 0);
+       PUDBEG(I) = 0;
+       PUDEND(I) = 0;
+       PUDMAR(I) = -1;
+       I = I - 1;
+     END;
+   END;
+   IF OUTSTC=1 THEN 
+     PUT FILE(SYSPRINT) EDIT(' CALL OF OUTTST, OUTEND , FPUD',
+              OUTEND,FPUD) (SKIP,A,F(6),F(6));
+ 
+ END OUTTST;

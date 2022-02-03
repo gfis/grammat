@@ -1,0 +1,611 @@
+/.PASCAL LOGON
+/.PASCAL   DO DO.EXTRA,('(PRIMARY)',PARM=NOSPLIT) 
+ /*-----------------------------------------------------------------*/
+ /*  P A S C A L                                                    */
+ /*-----------------------------------------------------------------*/
+ EOF IDENTIFIER NUMBER STRING
+[AXIOM = PROGRAM.
+PROGRAM = 
+      PROGRAM_HEADING BLOCK 
+      . 
+  
+PROGRAM_HEADING = 
+      PROGR_IDENTIFIER '(' FILE_IDENTIFIER_LIST ')' ';' 
+      . 
+  
+BLOCK = 
+      LABEL_DECLARATIN_PART COEFINITION_PART TYPE_DEFINITION_PART 
+         VARIABLE_DECLARATION_PART  PROCEDURE_AND_FUNCTION_DECLARATION_PART 
+         STATEMENT_PART 
+      . 
+  
+LABEL_DECLARATION_PART = 
+    EMPTY 
+      | 
+    LABEL LABEL_IDENTIFIER_LIS;' 
+      . 
+  
+LABEL_IDENTIFIER_LIST = 
+     L_IDENTIFIER 
+      | 
+      LABEL_IDENTIFIER_LIST ',' LABEL_IDENTIFIER 
+      . 
+  
+LABEL_IDENTIFIER = 
+      UNSIGNED_INTEGER 
+      . 
+  
+CONSTANT_DEFINITION_PART = 
+  TY 
+      | 
+      CONST CONSTANT_DEFINITIO
+      . 
+  
+CONSTANT_DEFINITION_LIST = 
+  STANT_DEFINITION 
+      | 
+      CONSTANT_DEFINITION_LIST ';' CONSTANT_DEFINITION 
+      . 
+  
+CONSTANT_DEFINITION = 
+      IENTIFIER '=' CONSTANT 
+      . 
+  
+CONSTANT = 
+      UNSIGNED_NUM      | 
+   N UNSIGNED_NUMBER 
+      CONSTANT_IDENTIFIER 
+      | 
+      SIGN CONSTANT_IDENTIFIER 
+      | 
+      STRING 
+      . 
+  
+UNSIGNED_NUMBER = 
+      UNIGN   | 
+      UNSIGNED_REAL 
+      . 
+  
+SIGN = 
+      '+' 
+      | 
+      '-' 
+      . 
+  
+CONSTAN_IDENTIFIER    IDENT   INITION_PART = 
+      EMPTY 
+      | 
+      TYPE TYPE_DEFINITION_LIST    ';' 
+      . 
+  
+TYPE_DEFINITION_LIST = 
+      ITION 
+      | 
+      TYPE_DEFINITION_LIST ';'E_DEFINITION 
+      . 
+  
+TYPE_DEFINITION = 
+      IDENTER '=' TYPE_TYPE 
+      . 
+  
+TYPE_TYPE = 
+      SIMPLE_TYPE 
+      | 
+      STRUCTURED_TYPE 
+      | 
+      POINTER_TYPE 
+      . 
+  
+SIMPLE_TYPE = 
+      SCALAR_TY      SUBRANGE_PE 
+      | 
+      TYPE_IDENTIFIER 
+      . 
+  
+SCALAR_TYPE = 
+      '(' IDENT ')' 
+      . 
+
+SUBRANGE_TYPE = 
+      CONSTA'   . 
+  
+TYPE_IDENTIFIER = 
+      IDENT . 
+  
+STRUCTURED_TYPE = 
+      UNPACD_STRUCTURED_TYPE 
+      | 
+      PACKED UNPACKED_STRUCTURED_TYPE 
+      . 
+  
+UNPACKED_STRUCTURED_TYPE = 
+  ARRAY_TYPE 
+      | 
+      RECORD_TYPE 
+      | 
+      SET_TYPE 
+      | 
+      FILE_TYPE 
+  
+      . 
+  
+ARRAY_TYPE = 
+    (' INDEX_T '_TYPE 
+      . 
+INDEX_TYPE_LIST = 
+      INDEXTYPE 
+      | 
+      INDEX_TYPE_LIST ',' INDEX_TYPE 
+      . 
+  
+INDEX_TYPE = 
+      SIMPLE_TYP     . 
+  
+COMENT_TYPE = 
+      TYPE 
+     
+RECORD_TYPE 
+      RECORELD_LI
+      . 
+  
+FIELD_LIST = 
+      FIXED_PART
+      FIXED_P ';' VARIANT_PART 
+      | 
+      VARIANT_PART 
+      . 
+  
+FIXED_PART = 
+      RECORD_SELST 
+      . 
+  
+RECORD_SELECTION_LIST = 
+     ECORD_SELECTION 
+      | 
+      RECORD_SELECTION_LIST ';' RECORD_SELECTION 
+      . 
+  
+RECORD_SELECTION = 
+      FIELIDENTIFIER_LIST ':' TYPE_TYPE 
+      | 
+      EMPTY 
+      . 
+  
+FIELD_IDENTIFIER_LIST = 
+      FIELD_IDENTIFIER 
+      | 
+      FIELD_IDENTIFIER_LIST ',' FIELD_IDENTIFIER 
+      . 
+  
+VARIANT_PART = 
+      CASE TAGIELD TYPE_IDENTIFIER OF VARIANT_LIST 
+      . 
+  
+  
+VARIANT_LIST = 
+        VARNT 
+      | 
+      VARIANT_LIST ';' VARIANT 
+      . 
+  
+TAG_FIELD = 
+      FIELD_IDENT ':' 
+      |    EMPTY 
+      . 
+  
+VARIANT = 
+      CASE_LABEL_LILD_LIST ')'  | 
+      EMPTY 
+      . 
+  
+CASE_LABEL_LIST = 
+      CASE_ 
+      CASE_LABEL_LIST ',' CASELABEL 
+      . 
+  
+CASE_LABEL = 
+      CONSTANT 
+  . 
+SET_TYPE 
+      SET OF BASE_TYPE 
+      . 
+  
+BASE_TYPE = 
+      SIMPLE_TYPE . 
+  
+FILE_T= 
+      FILE OF TYPE_TY. 
+  
+POIE = 
+      TYPE_IDENTIFIER 
+      . 
+  
+VARIABLE_DECLARATION_PART = 
+  
+      | 
+      VAR VARIABLE_DELARATION_    . 
+  
+VARIABLE_DECLARATION_LIST = 
+      VARIABLE_DECLARATION 
+      | 
+      VARIABLE_DECLARATION_LIST ';' VARIABLE_DECLARATION 
+      . 
+  
+VARIABLE_DECLARATION = 
+      _LIST ':' TYPE_TYPE 
+      . 
+  
+PROCEDURE_AND_FUNCTION_DECLARAART = 
+      PROCEDURE_OR_FUNCTION_DECLARATION_LIST ';'
+      . 
+  
+PROCEDURE_OR_FUNCTION_DECLARATN_LIST = 
+      PROCEDURE_OR_FUNCTION_DECLARATION 
+      | 
+      PROCEDURE_OR_FUNCTION_DECLARATION_LIST ';' 
+         PROCEDURE_OR_FUNCTION_DECLARATION 
+      . 
+  
+PROCEDURE_OR_FUNCTION_DECLARAT = 
+      PROCEDURE_DECLARATION 
+      | 
+      FUNCTION_DECLARATION 
+      . 
+PROCEDURE_DECLARATION = 
+      PROCEDURE_HEADING BLOCK 
+      . 
+  
+PROCEDURE_HEADING = 
+      PROCEDURE  IDENTIFIER ';' 
+      | 
+      PROCEDURE IDENTIFIER '(' FORMAL_PARAMETER_SECTION_LIST ')' ';' 
+      . 
+  
+FORMAL_PARAMETER_SECTION_LIST  
+      FORMAL_PARAMETER_SECTION 
+      | 
+      FORMAL_PARAMETER_SECTION_LIST ';' FORMAL_PARAMETER_SECTION 
+      . 
+  
+FORMAL_PARAMETER_SECTION = 
+    PARAMETER_GROUP 
+      | 
+      VAR PARAMETER_GROUP 
+      | 
+      FUNCTION PARAMETER_GROUP 
+      | 
+      PROCEDURE IDENTIFIER_LIST 
+      . 
+  
+PARAMETER_GROUP = 
+      IDENT_LIST ':' TYPE_IDENTIFIER 
+      . 
+  
+FUNCTION_DECLARATION = 
+      EADING BLOCK 
+      . 
+  
+FUNCTION_HEADING = 
+      FUNCFIER ':' RESULT_TYPE ';' 
+      | 
+      FUNCTION IDENTIFIER '(' FORMAL_PARAMETER_SECTION_LIST ')' ':' RESULT_TYPE ';' 
+      . 
+  
+RESULT_TYPE = 
+      TYPE_IDENTIFIER 
+    . 
+  
+STATEMENT_PART = 
+      COMPOUENT 
+      . 
+  
+STATEMENT = 
+      UNLABELLTEM     LABEL ':ATEMENT 
+      . 
+  
+UNLABELLED_STATEMENT = 
+      MPLE_STATEMENT 
+      | 
+      STRUCTURED_STATEMENT 
+      . 
+  
+SIMPLE_STATEMENT = 
+      ASSI_STATEMENT 
+      | 
+      PROCEDURE_STATEMENT 
+      | 
+      GOTO_STATEMENT 
+      | 
+      EMPTY_STATEMENT 
+      . 
+  
+ASSIGNMENT_STATEMENT = 
+      =' EXPRESSION 
+      | 
+      FUNCTION_IDENTIFIER ':=' EXPRESSION 
+      . 
+  
+VARIABLE = 
+      ENTIRE_VARIA 
+      | 
+      COMPONENT_VARIABLE 
+      | 
+      REFERENCED_VARIABLE 
+      . 
+  
+ENTIRE_VARIABLE = 
+      VARIAENTIFIER 
+      . 
+  
+VARIABLE_IDENTIFIER = 
+     ID . 
+COMPONENT_VARIABLE = 
+      INDEXED_VARIABLE 
+      | 
+      FIELD_DESIGNATOR 
+      | 
+      FILE_BUFFER 
+      . 
+  
+INDEXED_VARIABLE = 
+      ARRA(' EXPRESSION_LIST ')' 
+      . 
+  
+ARRAY_VARIABLE = 
+      VARIAB
+      . 
+  
+FIELD_DESIGNATOR = 
+      RECOE '.' FIELD_IDENTIFIER 
+      . 
+  
+FIELD_IDENTIFIER = 
+      IDENR 
+      . 
+  
+FILE_BUFFER = 
+      FILE_V'<-
+  
+FILE_VARIABLE = 
+      VARIABL
+      . 
+  
+REFERENCED_VARIABL= 
+      VAR   . 
+  
+POINTER_VARIABLE = 
+      VARI . 
+  
+EXPRESSION = 
+      SIMPLE_EXPRESSION 
+      | 
+      SIMPLE_EXPRESSION RELATIONAL_OPERATOR SIMPLE_EXPRESSION 
+      . 
+  
+RELATIONAL_OPERATOR = 
+      '' 
+      | 
+      '<>' 
+      | 
+      '<'
+      | 
+      '>' 
+      | 
+      '<=' 
+      | 
+     '>=' 
+      IN 
+ . 
+  
+SIRESSION = 
+TERM 
+    
+      SIGN TERM 
+      | 
+      SIMPLE_EXPRESSION ADDING_OPERATOR TERM 
+      . 
+  
+ADDING_OPERATOR = 
+      '+' 
+   | 
+      '-' 
+      | 
+    R 
+   
+TERM = 
+      FACTOR 
+      | 
+      TERM MULTIPLYING_OPERATOR 
+      . 
+  
+MULTIPLYING_OPERATOR = 
+            | 
+      '/' 
+      | 
+      DIV 
+      | 
+      MOD 
+      | 
+      AND 
+      . 
+  
+FACTOR  
+      VAR
+      | SIG     | 
+  EXPRESSIO      | 
+      FUNCTION_DESIGNATOR 
+      | 
+      SET_CONSTANT 
+      | 
+      NOT FACTOR 
+      . 
+  
+UNSIGNED_CONSTANT = 
+      ED_ 
+      STRING 
+      | 
+      CNSTANT_IDENTIF 
+      |
+      NIL 
+      . 
+  
+FUNCTION_DESIGNATOR = 
+     FUER 
+      | 
+      FUNCTION_IDENTIFIER '(' PARAMETER_LIST ')' 
+      . 
+FUNCTION_IDENTIFIER = 
+      IDENTIFIER 
+      . 
+  
+SET = 
+      '(.' ELEMENT_LIST '.)' 
+      . 
+ELEMENT_LIST = 
+      ELEMENTS 
+      | 
+      EMPTY 
+      . 
+  
+ELEMENTS = 
+      ENT 
+       EMENT 
+      . 
+  
+ELEMENT = 
+      EXPRESSION 
+     EXPRESS' EXPRESSION 
+      . 
+  
+PROCEDURE_STATEMENT = 
+      PENTIFIER 
+      | 
+      PROCEDURE_IDENTIFIER '('ACTUAL_PARAMETER_LIST ')' 
+      . 
+  
+PROCEDURE_IDENTIFIER = 
+       
+      . 
+  
+ACTUAL_PARAMETER_LST = 
+   L_P | 
+      ACTUAL_PARAMETER_LIST ',' ACTUAL_PARAMETER 
+      . 
+  
+ACTUAL_PARAMETER = 
+      EXPRESSION 
+      | 
+      VARIABLE 
+      | 
+      PROCEDURE_IDENTIFIER 
+    | 
+      FUNCTION_IDENTIFIER 
+      . 
+  
+GOTO_STATEMENT = 
+      GOTO_SL_CONSTANT 
+      . 
+  
+GOTO_SYMBOL = 
+      GO TO 
+      | 
+      GOTO 
+      . 
+  
+EMPTY_TATEMENT = 
+ ';' 
+   
+STENT = 
+      COMPOUND_ST    
+      CONDITIONAL_STATEMENT 
+      | 
+      REPETITIVE_STATEMENT 
+      | 
+      WITH_STATEMENT 
+      . 
+  
+COMPOUND_STATEMENT = 
+      BEEMENT_LIST END 
+      . 
+  
+STATEMENT_LIST = 
+      STATEM
+      | 
+      STATEMENT_LIST ';' STATEMENT 
+      . 
+  
+CONDITIONAL_STATEMENT = 
+     TATEMENT 
+      | 
+      CASE_STATEMENT 
+      . 
+  
+IF_STATEMENT = 
+      IF EXESSENT 
+      | 
+      IF EXPRESSION THEN STATEMENT ELSE STATEMENT 
+      . 
+  
+CASE_STATEMENT = 
+      CASE ERESSION OF CASE_LIST END 
+      . 
+  
+CASE_LIST = 
+      CASE_LIST_ENT 
+      | 
+  CASE_LIST ';' CASE_LIST_ELEM 
+      . 
+  
+CASE_LIST_ELEMENT = 
+      CASE_LABEL_LIST ':' STATEMENT 
+      | 
+      EMPTY 
+      . 
+  
+REPETITIVE_STATEMENT = 
+    WH
+      | 
+      REPEAT_STATEMEN      | 
+R_STATEMENT 
+      . 
+  
+WHILE_STATEMENT = 
+      WHILEXPRESSION DO 
+      . 
+  
+REPEAT_STATEMENT = 
+      REPENT_LIST UNTIL EXPRESSION 
+      . 
+  
+FOR_STATEMENT = FOR CONTROL_VAE ':=' FOR_LIST DO STATEMENT 
+      . 
+  
+FOR_LIST = 
+      INITIAL_VALUE TO FINAL_VALUE 
+      | 
+      INITIAL_VALUE DOWNTO FINAL_VALUE 
+      . 
+  
+CONTROL_VARIABLE = 
+      IDENER 
+      . 
+  
+INITIAL_VALUE = 
+      EXPR
+  
+  
+FINAL_VALUE = 
+      EXPRESSIO
+      . 
+  
+WIH_STATEMENT = 
+     WITH ARIATEMENT 
+      . 
+  
+      RECORD_VARIABLE_LIST 
+  ABLE 
+      | 
+      RECORD_VARIABLE_LIST ','ORD_VARIABLE 
+      . 
+]
+/LOGOFF

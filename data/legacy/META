@@ -1,0 +1,54 @@
+ /*--------------------------------------------------------------*/
+ /*  METAGRAMMATIK FUER GRAMMATIKEN                             */
+ /*--------------------------------------------------------------*/
+EOF IDENTIFIER NUMBER STRING
+[AXIOM          = PROGRAM
+.PROGRAM        = '[' SYNTAX ']' STATEMENTS              => #1
+                | PROGRAM '[' SYNTAX ']' STATEMENTS      => #1
+.SYNTAX         = RULES                                  => #2
+.LEFT_SIDE      = IDENTIFIER                             => #3
+.RULES          = RULE
+                | RULES '.' RULE
+.RULE           = LEFT_SIDE '=' RIGHT_SIDES              => #4
+                | LEFT_SIDE '-' RIGHT_SIDES              => #5
+.RIGHT_SIDES    = RIGHT_SIDE
+                | RIGHT_SIDES '|' RIGHT_SIDE
+.RIGHT_SIDE     = SYNTAX_PART SEMANTIC_PART
+.SYNTAX_PART    = MEMBERETIES                            => #6
+.STATEMENTS     =
+.MEMBERETIES    =                                        => #7
+                | MEMBERETIES MEMBER
+.MEMBER         = PRIMARY
+.PRIMARY        = IDENTIFIER                             => #8
+                | STRING                                 => #9
+                | NUMBER                                 => #8
+.SEMANTIC_PART  = TRANSLATIONETY GENERATIONETIES         => #10
+.TRANSLATIONETY =                                        => #11
+                | '=>' ELEMENTETIES                      => #12
+.ELEMENTETIES   =                                        => #13
+                | ELEMENTS
+.ELEMENTS       = ELEMENT
+                | ELEMENTS ELEMENT
+.ELEMENT        = STRING                                 => #14
+                | IDENTIFIER                             => #15
+                | NUMBER                                 => #16
+                | IDENTIFIER ':' NUMBER                  => #17
+                | '#' NUMBER                             => #18
+                | '@'                                    => #19
+                | '%' NUMBER                             => #20
+                | COMBINED_SYMBOL COMBINED_ELEM
+.COMBINED_SYMBOL= IDENTIFIER                             => #21
+.COMBINED_ELEM  = '(' ELEMENTS ')'                       => #22
+.GENERATIONETIES=
+                | GENERATIONETIES GENERATION
+.GENERATION     = '->' ACCUMULATOR '=' ELEMENTETIES      => #23
+.ACCUMULATOR    =                                        => #24
+                | IDENTIFIER                             => #25
+.RULE = LOAD  DDNAME        => #30
+      | STORE DDNAME        => #31
+      | READ  DDNAME        => #32
+      | WRITE DDNAME        => #33
+ .DDNAME = IDENTIFIER        => #34
+      .RULE = PARM STRING         => #35
+.
+]

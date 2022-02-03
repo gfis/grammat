@@ -1,0 +1,159 @@
+/.PL360 LOGON
+/.PL360    DO DO.EXTRA,('(PRIMARY)',PARM=NOSPLIT) 
+ /*-------------------------------------------------------------------*/ 
+ /* PL360, A PROGRAMMING LANGUAGE FOR THE 360 COMPUTERS               */ 
+ /* NIKLAUS WIRTH, JOURN.ACM VOL 15, NO 1(JAN 1968), PP 37-74         */ 
+ /*-------------------------------------------------------------------*/ 
+ EOF ID T_NUMBER STRING 
+[AXIOM = PROGRAM 
+.K_REG = ID 
+.T_CELL_ID = ID 
+.PROC_ID = ID 
+.FUNC_ID = ID 
+.T_CELL = T_CELL_ID 
+ | T_CELL1 ')' 
+ | T_CELL2 ')' 
+.T_CELL1 = T_CELL2 ARITH_OP T_NUMBER 
+ | T_CELL3 T_NUMBER 
+.T_CELL2 = T_CELL3 K_REG 
+.T_CELL3 = T_CELL_ID  '('  
+.UNARY_OP = ABS 
+ | NEG 
+ | NEG ABS 
+.ARITH_OP = '+' 
+ | '-' 
+ | '*' 
+ | '/' 
+ | '+' '+' 
+ | '-' '-'G_OP = AR 
+  | XOR 
+T_OP = SHLA 
+  | SHRA 
+  | SHL | SHRL 
+.K_REG_ASS = K_REG ':=' T_CELL 
+           | K_REG ':=' T_NUMBER 
+           | K_REG ':=' STRING 
+           | K_REG ':=' K_REG 
+           | K_REG ':=' UNARY_OP T_CELL 
+           | K_REG ':=' UNARY_OP T_NUMBER 
+           | K_REG ':=' UNARY_OP K_REG 
+           | K_REG ':=' '@' T_CELL 
+           | K_REG_ASS ARITH_OP T_CELL 
+           | K_REG_ASS ARITH_OP T_NUMBER 
+           | K_REG_ASS ARITH_OP K_REG 
+           | K_REG_ASS LOG_OP T_NUMBER 
+           | K_REG_ASS LOG_OP T_CELL 
+           | K_REG_ASS LOG_OP K_REG 
+           | K_REG_ASS SHIFT_OP T_NUMBER 
+           | K_REG_ASS SHIFT_OP K_REG 
+.FUNC1 = FUNC2 T_NUMBER 
+       | FUNC2 K_REG 
+       | FUNC2 T_CELL 
+       | FUNC2 STRING 
+.FUNC2 = FUNC_ID 
+       | FUNC1 ',' 
+.CASE_SEQ = CASE K_REG OF BEGIN 
+          | CASE_SEQ STATEMENT 
+.SIMPLE_ST = T_CELL ':=' K_REG 
+           | K_REG_ASS 
+           | NULL 
+           | GOTO ID 
+           | PROC_ID 
+           | FUNC_ID 
+           | FUNC1 
+           | CASE_SEQ END 
+           | BLOCKBODY END 
+.REL_OP = '<' 
+        | '=' 
+        | '>' 
+        | '<=' 
+        | '>=' 
+        | ' =' 
+.NOT    = ' ' 
+.CONDITION = K_REG REL_OP T_CELL 
+           | K_REG REL_OP T_NUMBER 
+           | K_REG REL_OP K_REG 
+           | K_REG REL_OP STRING 
+           | OVERFLOW 
+           | REL_OP 
+           | T_CELL 
+           | NOT T_CELL 
+.COMP_COND = CONDITION 
+           | COMP_AOR CONDITION 
+.COMP_AOR = COMP_COND AND 
+          | COMP_COND OR 
+.COND_THEN = COMP_COND THEN 
+.TRUE_PART = SIMPLE_ST ELSE 
+.WHILE_ = WHILE 
+.COND_DO = COMP_COND DO 
+.ASS_STEP = K_REG_ASS STEP T_NUMBER 
+.LIMIT = UNTIL K_REG 
+       | UNTIL T_CELL 
+       | UNTIL T_NUMBER 
+.DO_ = DO 
+.STATEMENT_ = SIMPLE_ST 
+            | IF COND_THEN STATEMENT_ 
+            | IF COND_THEN TRUE_PART STATEMENT_ 
+            | WHILE_ COND_DO STATEMENT_ 
+            | FOR ASS_STEP LIMIT DO_ STATEMENT_ 
+.STATEMENT = STATEMENT_ 
+.SI_T_TYPE = SHORT INTEGER 
+           | INTEGER 
+           | LOGICAL 
+           | REAL 
+           | LONG REAL 
+           | BYTE 
+           | CHARACTER 
+.T_TYPE = SI_T_TYPE 
+        | ARRAY T_NUMBER SI_T_TYPE 
+.T_DECL1 = T_TYPE ID 
+         | T_DECL2 ID 
+.T_DECL2 = T_DECL7 ',' 
+.T_DECL3 = T_DECL1 '=' 
+.T_DECL4 = T_DECL3  '('  
+         | T_DECL5 ',' 
+.T_DECL5 = T_DECL4 T_NUMBER 
+         | T_DECL4 STRING 
+.T_DECL6 = T_DECL3 
+.T_DECL7 = T_DECL1 
+         | T_DECL6 T_NUMBER 
+         | T_DECL6 STRING 
+         | T_DECL5 ')' 
+.FUNC_DC1 = FUNCTION 
+          | FUNC_DC7 
+.FUNC_DC2 = FUNC_DC1 ID 
+.FUNC_DC3 = FUNC_DC2  '('  
+.FUNC_DC4 = FUNC_DC3 T_NUMBER 
+.FUNC_DC5 = FUNC_DC4 ',' 
+.FUNC_DC6 = FUNC_DC5 T_NUMBER 
+.FUNC_DC7 = FUNC_DC6 ')' 
+.SYN_DC1 = T_TYPE ID SYN 
+         | SI_T_TYPE REGISTER ID SYN 
+         | SYN_DC3 ID SYN 
+.SYN_DC2 = SYN_DC1 T_CELL 
+         | SYN_DC1 T_NUMBER 
+         | SYN_DC1 K_REG 
+.SYN_DC3 = SYN_DC2 
+.SEG_HEAD = SEGMENT 
+.PROC_HD1 = PROCEDURE 
+          | SEG_HEAD PROCEDURE 
+.PROC_HD2 = PROC_HD1 ID 
+.PROC_HD3 = PROC_HD2  '('  
+.PROC_HD4 = PROC_HD3 K_REG 
+.PROC_HD5 = PROC_HD4 ')' 
+.PROC_HD6 = PROC_HD5 ';' 
+.DECL = T_DECL7 
+      | FUNC_DC7 
+      | SYN_DC2 
+      | PROC_HD6 STATEMENT_ 
+      | SEG_HEAD BASE K_REG 
+.LABEL_DEF = ID ':' 
+.BLOCKHEAD = BEGIN 
+           | BLOCKHEAD DECL ';' 
+.BLOCKBODY = BLOCKHEAD 
+           | BLOCKBODY STATEMENT ';' 
+           | BLOCKBODY LABEL_DEF 
+.PROGRAM = '.' STATEMENT '.' 
+. 
+.] 
+/LOGOFF

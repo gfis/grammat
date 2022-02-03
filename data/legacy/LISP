@@ -1,0 +1,107 @@
+/.LISP LOGON
+/DO DO.EXTRA,('(PRIMARY)',PARM=NOSPLIT)
+ /*--------------------------------------------------------------*/
+ /*  METAGRAMMATIK FUER GRAMMATIKEN                             */
+ /*--------------------------------------------------------------*/
+EOF IDENTIFIER NUMBER STRING
+[AXIOM          = PROGRAM
+.PROGRAM        = '[' SYNTAX ']' STATEMENTS              => #1
+                | PROGRAM '[' SYNTAX ']' STATEMENTS      => #1
+.SYNTAX         = RULES                                  => #2
+.LEFT_SIDE      = IDENTIFIER                             => #3
+.RULES          = RULE
+                | RULES '.' RULE
+.RULE           = LEFT_SIDE '=' RIGHT_SIDES              => #4
+                | LEFT_SIDE '-' RIGHT_SIDES              => #5
+.RIGHT_SIDES    = RIGHT_SIDE
+                | RIGHT_SIDES '|' RIGHT_SIDE
+.RIGHT_SIDE     = SYNTAX_PART SEMANTIC_PART
+.SYNTAX_PART    = MEMBERETIES                            => #6
+.STATEMENTS     =
+.MEMBERETIES    =                                        => #7
+                | MEMBERETIES MEMBER
+.MEMBER         = PRIMARY
+.PRIMARY        = IDENTIFIER                             => #8
+                | STRING                                 => #9
+                | NUMBER                                 => #8
+.SEMANTIC_PART  = TRANSLATIONETY GENERATIONETIES         => #10
+.TRANSLATIONETY =                                        => #11
+                | '=>' ELEMENTETIES                      => #12
+.ELEMENTETIES   =                                        => #13
+                | ELEMENTS
+.ELEMENTS       = ELEMENT
+                | ELEMENTS ELEMENT
+.ELEMENT        = STRING                                 => #14
+                | IDENTIFIER                             => #15
+                | NUMBER                                 => #16
+                | IDENTIFIER ':' NUMBER                  => #17
+                | '#' NUMBER                             => #18
+                | '@'                                    => #19
+                | '%' NUMBER                             => #20
+                | COMBINED_SYMBOL COMBINED_ELEM
+.COMBINED_SYMBOL= IDENTIFIER                             => #21
+.COMBINED_ELEM  = '(' ELEMENTS ')'                       => #22
+.GENERATIONETIES=
+                | GENERATIONETIES GENERATION
+.GENERATION     = '->' ACCUMULATOR '=' ELEMENTETIES      => #23
+.ACCUMULATOR    =                                        => #24
+                | IDENTIFIER                             => #25
+.
+]
+[STATEMENTS = FUNCTION
+ /* MARTI, J., HEARN, A.C., GRISS, M.L., GRISS, C.:
+    STANDARD LISP REPORT.
+    ACM SIGPLAN NOTICES 14, 10 (OCT. 1979) PP. 48-68     */
+ 
+ /* THE EXTENDED SYNTAX RULES */
+ 
+.FUNCTION = FTYPE PROCEDURE ID '(' ID_LIST ')' ';' STMT ';'
+              => '('PUTD '('QUOTE ID')' '('QUOTE FTYPE')'
+                  '('QUOTE '('LAMBDA '('ID_LIST')' STMT')))'
+ .ID_LIST = ID => ID
+          | ID ',' ID_LIST => ID ID_LIST
+          | => NIL
+.STMT = EXPR => EXPR
+           | PROPER_STMT => PROPER_STMT
+.PROPER_STMT = ASSIGNMENT_STMT => ASSIGNMENT_STMT
+                  | CONDITIONAL_STMT => CONDITIONAL_STMT
+                  | WHILE_STMT => WHILE_STMT
+                  | COMPOUND_STMT => COMPOUND_STMT
+.ASSIGNMENT_STMT = ID ':=' EXPR => '('SETQ ID EXPR')'
+.CONDITIONAL_STMT = IF EXPR THEN STMT ELSE STMT
+                       => '('COND '('EXPR STMT:1')' '('T STMT:2'))'
+                       | IF EXPR THEN STMT
+                       => '('COND '('EXPR STMT'))'
+ .WHILE_STMT = WHILE EXPR DO STMT
+                  => '('PROG NIL LBL '('COND '(('NULL EXPR')'
+                       '('RETURN NIL')))' STMT '('GO LBL'))'
+.COMPOUND_STMT = BEGIN SCALAR ID_LIST ';' PROGRAM_LIST END
+                    => '('PROG '('ID_LIST')' PROGRAM_LIST')'
+                    | BEGIN PROGRAM_LIST END
+                    => '('PROG NIL PROGRAM_LIST')'
+                    | '<<' STMT_LIST '>>'
+                    => '('PROGN STMT_LIST')'
+.PROGRAM_LIST = FULL_STMT => FULL_STMT
+              | FULL_STMT PROGRAM_LIST => FULL_STMT PROGRAM_LIST
+.FULL_STMT = STMT => STMT
+                | ID ':' => ID
+.STMT_LIST = STMT => STMT
+                | STMT ';' STMT_LIST => STMT STMT_LIST
+.EXPR = EXPR '.' EXPR => '('CONS  EXPR:1 EXPR:2')'
+            | EXPR '=' EXPR => '('EQUAL EXPR:1 EXPR:2')'
+            | EXPR EQ  EXPR => '('EQ    EXPR:1 EXPR:2')'
+            | '''' EXPR => '('QUOTE EXPR')'
+            | FUNCTION EXPR=> '('FUNCTION EXPR')'
+            | FUNCTION '(' ARGUMENT_LIST ')' => '('FUNCTION ARGUMENT_LIST')'
+            | NUMBER => NUMBER
+            | ID => ID
+.ARGUMENT_LIST = '(' ')' =>
+               | EXPR => EXPR
+               | EXPR ',' ARGUMENT_LIST => EXPR ARGUMENT_LIST
+.ARGUMENT_LIST = '(' ')' =>
+               | EXPR => EXPR
+               | EXPR ',' ARGUMENT_LIST => EXPR ARGUMENT_LIST
+]
+$EOF
+/STEP
+/LOGOFF
